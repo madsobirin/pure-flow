@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+AGENTS.md
+CLAUDE.md
+
+GEMINI*
+
+# Added by code-review-graph
+.code-review-graph/
