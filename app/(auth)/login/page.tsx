@@ -74,7 +74,7 @@ export default function LoginPage() {
       // Berhasil login, bersihkan form dan arahkan ke dashboard/home
       setEmail("");
       setPassword("");
-      router.push("/dashboard");
+      router.push("/");
     } catch (error) {
       console.error("[Login Fetch Error]", error);
       setErrors({
