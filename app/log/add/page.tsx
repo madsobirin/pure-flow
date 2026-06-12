@@ -1,5 +1,5 @@
-import DashboardHeader from "../../components/dashboard/DashboardHeader";
-import BottomNav from "../../components/dashboard/BottomNav";
+import DashboardHeader from "../../../components/dashboard/DashboardHeader";
+import BottomNav from "../../../components/dashboard/BottomNav";
 import { ChevronDown, Plus, Minus, Check } from "lucide-react";
 
 export default function AddLogPage() {
@@ -8,17 +8,21 @@ export default function AddLogPage() {
       <div className="w-full max-w-md bg-white min-h-screen relative shadow-sm flex flex-col md:my-8 md:rounded-[40px] md:min-h-[850px] md:shadow-xl md:border md:border-gray-100 overflow-hidden">
         <div className="flex-1 overflow-y-auto px-8 pb-28">
           <DashboardHeader />
-          
+
           <div className="flex items-start justify-between mb-1 mt-2">
             <h1 className="text-[20px] font-extrabold text-[#1a2332] leading-tight">
               Tambah latihan
             </h1>
             <div className="text-right">
-              <p className="text-[12px] text-gray-500 mb-0.5 font-medium tracking-tight">Kamis, 11 Jun 2026</p>
-              <p className="text-[13px] font-extrabold text-brand-teal">03.40</p>
+              <p className="text-[12px] text-gray-500 mb-0.5 font-medium tracking-tight">
+                Kamis, 11 Jun 2026
+              </p>
+              <p className="text-[13px] font-extrabold text-brand-teal">
+                03.40
+              </p>
             </div>
           </div>
-          
+
           <p className="text-[13px] text-gray-400 mb-8 font-medium">
             Catat progres harianmu untuk hasil maksimal.
           </p>
@@ -29,7 +33,9 @@ export default function AddLogPage() {
             </label>
             <div className="relative">
               <select className="w-full bg-[#f8f9fa] border-none rounded-[16px] px-5 py-4 text-[14px] text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all font-medium">
-                <option value="" disabled selected>Pilih alat dari daftar...</option>
+                <option value="" disabled selected>
+                  Pilih alat dari daftar...
+                </option>
                 <option value="dumbbell">Dumbbell 5kg</option>
                 <option value="treadmill">Treadmill</option>
               </select>
@@ -46,14 +52,22 @@ export default function AddLogPage() {
               </label>
               <div className="flex items-stretch h-[54px] bg-[#f8f9fa] rounded-[16px] overflow-hidden">
                 <div className="flex-1 flex items-center justify-center border-r border-[#eef2f6]">
-                  <span className="text-[24px] text-gray-400 font-light leading-none">0</span>
+                  <span className="text-[24px] text-gray-400 font-light leading-none">
+                    0
+                  </span>
                 </div>
                 <div className="flex flex-col w-[38px] shrink-0 bg-white">
                   <button className="flex-1 flex items-center justify-center border-b border-[#e8eaec] bg-[#f8f9fa] hover:bg-white transition-colors">
-                    <Plus className="w-3.5 h-3.5 text-brand-teal" strokeWidth={2.5} />
+                    <Plus
+                      className="w-3.5 h-3.5 text-brand-teal"
+                      strokeWidth={2.5}
+                    />
                   </button>
                   <button className="flex-1 flex items-center justify-center bg-[#f8f9fa] hover:bg-white transition-colors">
-                    <Minus className="w-3.5 h-3.5 text-brand-teal" strokeWidth={2.5} />
+                    <Minus
+                      className="w-3.5 h-3.5 text-brand-teal"
+                      strokeWidth={2.5}
+                    />
                   </button>
                 </div>
               </div>
@@ -65,14 +79,22 @@ export default function AddLogPage() {
               </label>
               <div className="flex items-stretch h-[54px] bg-[#f8f9fa] rounded-[16px] overflow-hidden">
                 <div className="flex-1 flex items-center justify-center border-r border-[#eef2f6]">
-                  <span className="text-[24px] text-gray-400 font-light leading-none">0</span>
+                  <span className="text-[24px] text-gray-400 font-light leading-none">
+                    0
+                  </span>
                 </div>
                 <div className="flex flex-col w-[38px] shrink-0 bg-white">
                   <button className="flex-1 flex items-center justify-center border-b border-[#e8eaec] bg-[#f8f9fa] hover:bg-white transition-colors">
-                    <Plus className="w-3.5 h-3.5 text-brand-teal" strokeWidth={2.5} />
+                    <Plus
+                      className="w-3.5 h-3.5 text-brand-teal"
+                      strokeWidth={2.5}
+                    />
                   </button>
                   <button className="flex-1 flex items-center justify-center bg-[#f8f9fa] hover:bg-white transition-colors">
-                    <Minus className="w-3.5 h-3.5 text-brand-teal" strokeWidth={2.5} />
+                    <Minus
+                      className="w-3.5 h-3.5 text-brand-teal"
+                      strokeWidth={2.5}
+                    />
                   </button>
                 </div>
               </div>
@@ -81,10 +103,13 @@ export default function AddLogPage() {
 
           <div className="mb-10">
             <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-[0.1em] uppercase mb-2">
-              CATATAN LATIHAN <span className="text-[#a8b0ba] font-medium lowercase tracking-normal">(opsional)</span>
+              CATATAN LATIHAN{" "}
+              <span className="text-[#a8b0ba] font-medium lowercase tracking-normal">
+                (opsional)
+              </span>
             </label>
-            <textarea 
-              placeholder="Bagaimana rasanya set terakhir?" 
+            <textarea
+              placeholder="Bagaimana rasanya set terakhir?"
               rows={5}
               className="w-full bg-[#f8f9fa] border-none rounded-[16px] p-5 text-[14px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all resize-none"
             />
@@ -101,7 +126,7 @@ export default function AddLogPage() {
             Log ini akan disimpan dengan timestamp saat ini.
           </p>
         </div>
-        
+
         <BottomNav activeTab="log" />
       </div>
     </div>

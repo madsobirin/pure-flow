@@ -1,9 +1,9 @@
-import DashboardHeader from "./components/dashboard/DashboardHeader";
-import Greeting from "./components/dashboard/Greeting";
-import StatsOverview from "./components/dashboard/StatsOverview";
-import LogButton from "./components/dashboard/LogButton";
-import RecentActivity from "./components/dashboard/RecentActivity";
-import BottomNav from "./components/dashboard/BottomNav";
+import DashboardHeader from "../components/dashboard/DashboardHeader";
+import Greeting from "../components/dashboard/Greeting";
+import StatsOverview from "../components/dashboard/StatsOverview";
+import LogButton from "../components/dashboard/LogButton";
+import RecentActivity from "../components/dashboard/RecentActivity";
+import BottomNav from "../components/dashboard/BottomNav";
 
 export default function HomePage() {
   return (

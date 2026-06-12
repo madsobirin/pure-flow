@@ -50,7 +50,7 @@ export default function BottomNav({ activeTab = "home" }: BottomNavProps) {
           </span>
         </Link>
 
-        <button className="flex flex-col items-center gap-1.5 group">
+        <Link href="/history" className="flex flex-col items-center gap-1.5 group">
           <Calendar
             className={`w-[26px] h-[26px] transition-colors ${activeTab === "history" ? "text-brand-teal" : "text-gray-400 group-hover:text-gray-700"}`}
             strokeWidth={activeTab === "history" ? 2.5 : 2}
@@ -60,7 +60,7 @@ export default function BottomNav({ activeTab = "home" }: BottomNavProps) {
           >
             History
           </span>
-        </button>
+        </Link>
       </div>
     </div>
   );
