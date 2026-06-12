@@ -1,27 +1,78 @@
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import DashboardHeader from "../../components/dashboard/DashboardHeader";
 import BottomNav from "../../components/dashboard/BottomNav";
 import Link from "next/link";
 import { Plus, CheckCircle2 } from "lucide-react";
 
-export default function LogListPage() {
-  const logs = [
-    {
-      id: 1,
-      name: "Dumbbell Press",
-      sets: 4,
-      reps: 12,
-      date: "Kamis, 11 Jun 2026",
-      time: "03.40",
+interface JwtPayload {
+  userId: number;
+  email: string;
+}
+
+export default async function LogListPage() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+
+  if (!token) {
+    redirect("/login");
+  }
+
+  let userId: number;
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error("JWT_SECRET is not defined in environment variables");
+    }
+    const decoded = jwt.verify(token, secret) as JwtPayload;
+    userId = decoded.userId;
+  } catch (error) {
+    console.error("JWT verification failed in log list page:", error);
+    redirect("/login");
+  }
+
+  const logsFromDb = await prisma.logLatihan.findMany({
+    where: { user_id: userId },
+    include: {
+      alat: {
+        select: {
+          nama_alat: true,
+        },
+      },
     },
-    {
-      id: 2,
-      name: "Treadmill Run",
-      sets: 1,
-      reps: 1,
-      date: "Rabu, 10 Jun 2026",
-      time: "16.20",
-    },
-  ];
+    orderBy: { tanggal_latihan: "desc" },
+  });
+
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  };
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
+  const logs = logsFromDb.map((log) => {
+    const dateObj = new Date(log.tanggal_latihan);
+    const dateStr = new Intl.DateTimeFormat("id-ID", dateOptions).format(dateObj);
+    const timeStr = new Intl.DateTimeFormat("id-ID", timeOptions)
+      .format(dateObj)
+      .replace(":", ".");
+
+    return {
+      id: log.id,
+      name: log.alat?.nama_alat || "Alat Terhapus",
+      sets: log.jumlah_set,
+      reps: log.jumlah_repetisi,
+      date: dateStr,
+      time: timeStr,
+    };
+  });
 
   return (
     <div className="min-h-screen bg-[#faf9f6] flex justify-center w-full">
@@ -43,30 +94,37 @@ export default function LogListPage() {
           </div>
 
           <div className="space-y-4">
-            {logs.map((log) => (
-              <div
-                key={log.id}
-                className="flex items-center justify-between bg-white border border-[#eef2f6] rounded-[24px] p-5 shadow-sm"
-              >
-                <div>
-                  <h3 className="font-bold text-gray-900 text-[17px] mb-1">
-                    {log.name}
-                  </h3>
-                  <p className="text-gray-500 text-[13px] mb-2">
-                    {log.sets} Sets • {log.reps} Reps
-                  </p>
-                  <p className="text-[11px] font-semibold text-brand-teal">
-                    {log.date} - {log.time}
-                  </p>
-                </div>
-                <div className="w-10 h-10 bg-[#dbf5ef] rounded-full flex items-center justify-center shrink-0">
-                  <CheckCircle2
-                    className="w-6 h-6 text-brand-teal"
-                    strokeWidth={2.5}
-                  />
-                </div>
+            {logs.length === 0 ? (
+              <div className="text-center py-12 bg-field-bg rounded-3xl border border-dashed border-gray-200">
+                <p className="text-sm text-gray-500 font-semibold mb-1">Belum ada latihan dicatat</p>
+                <p className="text-xs text-gray-400">Silakan catat latihan harian Anda.</p>
               </div>
-            ))}
+            ) : (
+              logs.map((log) => (
+                <div
+                  key={log.id}
+                  className="flex items-center justify-between bg-white border border-[#eef2f6] rounded-[24px] p-5 shadow-sm"
+                >
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-[17px] mb-1">
+                      {log.name}
+                    </h3>
+                    <p className="text-gray-500 text-[13px] mb-2">
+                      {log.sets} Sets • {log.reps} Reps
+                    </p>
+                    <p className="text-[11px] font-semibold text-brand-teal">
+                      {log.date} - {log.time}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 bg-[#dbf5ef] rounded-full flex items-center justify-center shrink-0">
+                    <CheckCircle2
+                      className="w-6 h-6 text-brand-teal"
+                      strokeWidth={2.5}
+                    />
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
