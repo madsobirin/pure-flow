@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Mail,
   Lock,
@@ -14,11 +14,63 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { loginSchema } from "@/lib/validations/auth";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+// Modal checker for registration redirect
+function RegistrationSuccessModal() {
+  const searchParams = useSearchParams();
+  const [show, setShow] = useState(
+    () => searchParams.get("registered") === "true",
+  );
+
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => setShow(false), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [show]);
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-md"
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            className="flex flex-col items-center justify-center max-w-md w-full p-6 text-center"
+          >
+            <div className="w-56 h-56">
+              <DotLottieReact
+                src="/animation/checkmark.lottie"
+                autoplay
+                loop={false}
+              />
+            </div>
+            <h3 className="text-3xl font-extrabold text-[#2d3238] mt-6 mb-2 tracking-tight">
+              Registrasi Berhasil!
+            </h3>
+            <p className="text-base font-semibold text-gray-500">
+              Akun Anda telah dibuat. Silakan login.
+            </p>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
 
   // Form states
+  const [isSuccess, setIsSuccess] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -74,7 +126,10 @@ export default function LoginPage() {
       // Berhasil login, bersihkan form dan arahkan ke dashboard/home
       setEmail("");
       setPassword("");
-      router.push("/");
+      setIsSuccess(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
     } catch (error) {
       console.error("[Login Fetch Error]", error);
       setErrors({
@@ -267,6 +322,44 @@ export default function LoginPage() {
           </p>
         </div>
       </motion.div>
+
+      {/* Overlay sukses login di atas form */}
+      <AnimatePresence>
+        {isSuccess && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              className="flex flex-col items-center justify-center max-w-md w-full p-6 text-center"
+            >
+              <div className="w-56 h-56">
+                <DotLottieReact
+                  src="/animation/checkmark.lottie"
+                  autoplay
+                  loop={false}
+                />
+              </div>
+              <h3 className="text-3xl font-extrabold text-[#2d3238] mt-6 mb-2 tracking-tight">
+                Login Berhasil!
+              </h3>
+              <p className="text-base font-semibold text-gray-500">
+                Mempersiapkan dashboard Anda...
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Suspense fallback={null}>
+        <RegistrationSuccessModal />
+      </Suspense>
     </div>
   );
 }

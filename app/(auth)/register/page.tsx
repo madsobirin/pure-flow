@@ -85,7 +85,7 @@ export default function RegisterPage() {
       setSignUpEmail("");
       setSignUpPassword("");
 
-      router.push("/login");
+      router.push("/login?registered=true");
     } catch (error) {
       console.error("[Register Fetch Error]", error);
       setErrors({ global: "Gagal terhubung ke server." });
