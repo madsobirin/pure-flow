@@ -1,6 +1,11 @@
 import { Dumbbell, Flame } from "lucide-react";
 
-export default function StatsOverview() {
+interface StatsOverviewProps {
+  workoutsThisWeek: number;
+  totalSets: number;
+}
+
+export default function StatsOverview({ workoutsThisWeek, totalSets }: StatsOverviewProps) {
   return (
     <div className="flex gap-4 mb-6">
       {/* Workouts Card */}
@@ -9,7 +14,7 @@ export default function StatsOverview() {
           <Dumbbell className="w-6 h-6 text-brand-teal" strokeWidth={2} />
         </div>
         <div className="text-[40px] font-extrabold text-brand-teal leading-none mb-2">
-          4
+          {workoutsThisWeek}
         </div>
         <div className="text-[10px] font-bold tracking-widest text-gray-700 uppercase mb-1">
           Workouts
@@ -23,7 +28,7 @@ export default function StatsOverview() {
           <Flame className="w-6 h-6 text-[#9a781b]" strokeWidth={2} />
         </div>
         <div className="text-[40px] font-extrabold text-[#1a2332] leading-none mb-2 relative z-10">
-          32
+          {totalSets}
         </div>
         <div className="text-[10px] font-bold tracking-widest text-gray-700 uppercase mb-1 relative z-10">
           Total Sets
