@@ -35,7 +35,7 @@ export default function LogListPage() {
             </h1>
             <Link
               href="/log/add"
-              className="flex items-center gap-1.5 text-brand-teal font-bold bg-[#e6f0ef] px-3 py-1.5 rounded-full hover:bg-[#c9f2eb] transition-colors"
+              className="flex items-center gap-1.5 text-brand-teal font-bold bg-brand-teal-light px-3 py-1.5 rounded-full hover:bg-[#c9f2eb] transition-colors"
             >
               <Plus className="w-4 h-4" strokeWidth={3} />
               <span className="text-sm">Tambah</span>

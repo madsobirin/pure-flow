@@ -36,7 +36,7 @@ export default function AddEquipmentPage() {
               <input
                 type="text"
                 placeholder="Misal: Dumbbell 5kg, Treadmill..."
-                className="w-full bg-[#f8f9fa] border-none rounded-2xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all"
+                className="w-full bg-field-bg border-none rounded-2xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all"
               />
             </div>
 
@@ -90,7 +90,7 @@ export default function AddEquipmentPage() {
               <textarea
                 placeholder="Misal: Beban maksimal 50kg, dipakai untuk upper body..."
                 rows={4}
-                className="w-full bg-[#f8f9fa] border-none rounded-2xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all resize-none"
+                className="w-full bg-field-bg border-none rounded-2xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all resize-none"
               />
             </div>
 

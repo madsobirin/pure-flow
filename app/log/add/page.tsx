@@ -28,11 +28,11 @@ export default function AddLogPage() {
           </p>
 
           <div className="mb-6">
-            <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-[0.1em] uppercase mb-2">
+            <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-widest uppercase mb-2">
               PILIH ALAT
             </label>
             <div className="relative">
-              <select className="w-full bg-[#f8f9fa] border-none rounded-[16px] px-5 py-4 text-[14px] text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all font-medium">
+              <select className="w-full bg-field-bg border-none rounded-[16px] px-5 py-4 text-[14px] text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all font-medium">
                 <option value="" disabled selected>
                   Pilih alat dari daftar...
                 </option>
@@ -47,23 +47,23 @@ export default function AddLogPage() {
 
           <div className="flex gap-4 mb-6">
             <div className="flex-1">
-              <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-[0.1em] uppercase mb-2">
+              <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-widest uppercase mb-2">
                 JUMLAH SET
               </label>
-              <div className="flex items-stretch h-[54px] bg-[#f8f9fa] rounded-[16px] overflow-hidden">
+              <div className="flex items-stretch h-[54px] bg-field-bg rounded-[16px] overflow-hidden">
                 <div className="flex-1 flex items-center justify-center border-r border-[#eef2f6]">
                   <span className="text-[24px] text-gray-400 font-light leading-none">
                     0
                   </span>
                 </div>
                 <div className="flex flex-col w-[38px] shrink-0 bg-white">
-                  <button className="flex-1 flex items-center justify-center border-b border-[#e8eaec] bg-[#f8f9fa] hover:bg-white transition-colors">
+                  <button className="flex-1 flex items-center justify-center border-b border-[#e8eaec] bg-field-bg hover:bg-white transition-colors">
                     <Plus
                       className="w-3.5 h-3.5 text-brand-teal"
                       strokeWidth={2.5}
                     />
                   </button>
-                  <button className="flex-1 flex items-center justify-center bg-[#f8f9fa] hover:bg-white transition-colors">
+                  <button className="flex-1 flex items-center justify-center bg-field-bg hover:bg-white transition-colors">
                     <Minus
                       className="w-3.5 h-3.5 text-brand-teal"
                       strokeWidth={2.5}
@@ -74,23 +74,23 @@ export default function AddLogPage() {
             </div>
 
             <div className="flex-1">
-              <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-[0.1em] uppercase mb-2">
+              <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-widest uppercase mb-2">
                 JUMLAH REPETISI
               </label>
-              <div className="flex items-stretch h-[54px] bg-[#f8f9fa] rounded-[16px] overflow-hidden">
+              <div className="flex items-stretch h-[54px] bg-field-bg rounded-[16px] overflow-hidden">
                 <div className="flex-1 flex items-center justify-center border-r border-[#eef2f6]">
                   <span className="text-[24px] text-gray-400 font-light leading-none">
                     0
                   </span>
                 </div>
                 <div className="flex flex-col w-[38px] shrink-0 bg-white">
-                  <button className="flex-1 flex items-center justify-center border-b border-[#e8eaec] bg-[#f8f9fa] hover:bg-white transition-colors">
+                  <button className="flex-1 flex items-center justify-center border-b border-[#e8eaec] bg-field-bg hover:bg-white transition-colors">
                     <Plus
                       className="w-3.5 h-3.5 text-brand-teal"
                       strokeWidth={2.5}
                     />
                   </button>
-                  <button className="flex-1 flex items-center justify-center bg-[#f8f9fa] hover:bg-white transition-colors">
+                  <button className="flex-1 flex items-center justify-center bg-field-bg hover:bg-white transition-colors">
                     <Minus
                       className="w-3.5 h-3.5 text-brand-teal"
                       strokeWidth={2.5}
@@ -102,7 +102,7 @@ export default function AddLogPage() {
           </div>
 
           <div className="mb-10">
-            <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-[0.1em] uppercase mb-2">
+            <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-widest uppercase mb-2">
               CATATAN LATIHAN{" "}
               <span className="text-[#a8b0ba] font-medium lowercase tracking-normal">
                 (opsional)
@@ -111,11 +111,11 @@ export default function AddLogPage() {
             <textarea
               placeholder="Bagaimana rasanya set terakhir?"
               rows={5}
-              className="w-full bg-[#f8f9fa] border-none rounded-[16px] p-5 text-[14px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all resize-none"
+              className="w-full bg-field-bg border-none rounded-[16px] p-5 text-[14px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all resize-none"
             />
           </div>
 
-          <button className="w-full bg-[#1ab79d] hover:bg-brand-teal text-white rounded-full py-4 flex items-center justify-center gap-2.5 font-bold text-[16px] shadow-[0_8px_20px_rgba(26,183,157,0.25)] transition-all active:scale-95 mb-10">
+          <button className="w-full bg-brand-teal hover:bg-brand-teal/80 text-white rounded-full py-4 flex items-center justify-center gap-2.5 font-bold text-[16px] shadow-[0_8px_20px_rgba(26,183,157,0.25)] transition-all active:scale-95 mb-10">
             <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
               <Check className="w-3.5 h-3.5 text-[#1ab79d]" strokeWidth={4} />
             </div>
