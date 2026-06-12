@@ -1,10 +1,6 @@
 import jwt from "jsonwebtoken";
 import { NextRequest } from "next/server";
 
-// ============================================================
-// Types
-// ============================================================
-
 export interface JwtPayload {
   userId: number;
   email: string;
@@ -16,10 +12,6 @@ interface SignTokenOptions {
   rememberMe?: boolean;
 }
 
-// ============================================================
-// Helpers
-// ============================================================
-
 const getSecret = (): string => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
@@ -28,12 +20,11 @@ const getSecret = (): string => {
   return secret;
 };
 
-/**
- * Generate a signed JWT token.
- * - Default expiry: 1 hour
- * - With rememberMe: 7 days
- */
-export function signToken({ userId, email, rememberMe = false }: SignTokenOptions): string {
+export function signToken({
+  userId,
+  email,
+  rememberMe = false,
+}: SignTokenOptions): string {
   const secret = getSecret();
   const expiresIn = rememberMe ? "7d" : "1h";
 
@@ -42,19 +33,15 @@ export function signToken({ userId, email, rememberMe = false }: SignTokenOption
   });
 }
 
-/**
- * Verify the JWT bearer token from the request's Authorization header.
- * Returns the decoded payload on success, or null on failure.
- */
 export function verifyToken(request: NextRequest): JwtPayload | null {
   try {
-    const authHeader = request.headers.get("authorization");
+    const tokenCookie = request.cookies.get("auth_token");
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!tokenCookie || !tokenCookie.value) {
       return null;
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = tokenCookie.value;
     const secret = getSecret();
     const decoded = jwt.verify(token, secret) as JwtPayload;
 
@@ -73,6 +60,6 @@ export function unauthorizedResponse() {
       success: false,
       message: "Unauthorized. Token tidak valid atau tidak ditemukan.",
     },
-    { status: 401 }
+    { status: 401 },
   );
 }

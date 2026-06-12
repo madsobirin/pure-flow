@@ -111,7 +111,7 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, rememberMe: false }),
       });
 
       const result = await response.json();
@@ -123,12 +123,12 @@ export default function LoginPage() {
         return;
       }
 
-      // Berhasil login, bersihkan form dan arahkan ke dashboard/home
       setEmail("");
       setPassword("");
       setIsSuccess(true);
       setTimeout(() => {
         router.push("/");
+        router.refresh();
       }, 1500);
     } catch (error) {
       console.error("[Login Fetch Error]", error);

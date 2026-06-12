@@ -2,20 +2,13 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { signToken } from "@/lib/auth";
 import bcrypt from "bcryptjs";
-
-// ============================================================
-// Types
-// ============================================================
+import { cookies } from "next/headers";
 
 interface LoginBody {
   email?: string;
   password?: string;
   remember_me?: boolean;
 }
-
-// ============================================================
-// POST /api/auth/login
-// ============================================================
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,11 +22,11 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Field email dan password wajib diisi.",
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
-    // --- Cek apakah email terdaftar ---
+    // Cek apakah email terdaftar
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -44,7 +37,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Email belum terdaftar",
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -57,7 +50,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "email dan password tidak sesuai",
         },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -68,12 +61,25 @@ export async function POST(request: NextRequest) {
       rememberMe: remember_me,
     });
 
+    // Durasi Cookie (menyesuaikan remember_me)
+    // 7 hari jika remember_me aktif, jika tidak maka 1 jam (dalam satuan detik)
+    const cookieMaxAge = remember_me ? 7 * 24 * 60 * 60 : 1 * 60 * 60;
+
+    // Set Token ke HttpOnly Cookie
+    const cookieStore = await cookies();
+    cookieStore.set("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: cookieMaxAge,
+    });
+
     return Response.json(
       {
         success: true,
         message: "Login berhasil.",
         data: {
-          token,
           user: {
             id: user.id,
             name: user.name,
@@ -83,7 +89,7 @@ export async function POST(request: NextRequest) {
           },
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[POST /api/auth/login]", error);
@@ -92,7 +98,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "Internal server error.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
