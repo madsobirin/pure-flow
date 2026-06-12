@@ -20,6 +20,8 @@
 # production
 /build
 
+flow_app_gym*
+
 # misc
 .DS_Store
 *.pem
