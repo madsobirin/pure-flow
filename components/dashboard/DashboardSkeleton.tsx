@@ -31,7 +31,7 @@ export default function DashboardSkeleton() {
             className="flex items-center gap-4 p-3 border border-gray-100 rounded-2xl bg-white"
           >
             {/* Image Placeholder */}
-            <div className="w-12 h-12 bg-gray-200 rounded-xl flex-shrink-0" />
+            <div className="w-12 h-12 bg-gray-200 rounded-xl shrink-0" />
 
             {/* Text Placeholder */}
             <div className="flex-1 space-y-2">
@@ -40,7 +40,7 @@ export default function DashboardSkeleton() {
             </div>
 
             {/* Chevron/Arrow Placeholder */}
-            <div className="w-5 h-5 bg-gray-200 rounded-full flex-shrink-0" />
+            <div className="w-5 h-5 bg-gray-200 rounded-full shrink-0" />
           </div>
         ))}
       </div>
