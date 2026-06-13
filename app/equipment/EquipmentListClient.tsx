@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2, CheckCircle2 } from "lucide-react";
 
 interface Alat {
   id: number | string;
@@ -12,10 +12,16 @@ interface Alat {
   isUploading?: boolean;
 }
 
-export default function EquipmentListClient() {
-  const [equipments, setEquipments] = useState<Alat[]>([]);
+interface EquipmentListClientProps {
+  initialData?: Alat[];
+}
+
+export default function EquipmentListClient({
+  initialData = [],
+}: EquipmentListClientProps) {
+  const [equipments, setEquipments] = useState<Alat[]>(initialData);
   const [uploadingItems, setUploadingItems] = useState<Alat[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialData.length === 0);
 
   const fetchEquipments = async () => {
     try {
@@ -34,28 +40,25 @@ export default function EquipmentListClient() {
   const loadUploadingItems = () => {
     if (typeof window !== "undefined") {
       const items = JSON.parse(
-        localStorage.getItem("uploading_equipments") || "[]"
+        localStorage.getItem("uploading_equipments") || "[]",
       );
       setUploadingItems(items);
     }
   };
 
   useEffect(() => {
-    // Fetch data awal & load item yang sedang diupload di microtask berikutnya
-    // guna menghindari peringatan React tentang sinkronisasi setState di dalam Effect
     Promise.resolve().then(() => {
       fetchEquipments();
       loadUploadingItems();
     });
 
-    // Event listener untuk memantau perubahan upload selesai
     const handleUpdated = () => {
       fetchEquipments();
       loadUploadingItems();
     };
 
     window.addEventListener("equipment-updated", handleUpdated);
-    window.addEventListener("storage", loadUploadingItems); // Sync tab lain jika ada
+    window.addEventListener("storage", loadUploadingItems);
 
     return () => {
       window.removeEventListener("equipment-updated", handleUpdated);
@@ -77,7 +80,7 @@ export default function EquipmentListClient() {
       </div>
 
       <div className="space-y-4">
-        {/* State 1: Loading Pertama Kali (Tampilkan Skeleton) */}
+        {/* State 1: Loading Pertama Kali (Skeleton) */}
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
             <div
@@ -102,64 +105,81 @@ export default function EquipmentListClient() {
             </p>
           </div>
         ) : (
-          /* State 3: Menampilkan Data (Uploading + Real Data) */
+          /* State 3: Menampilkan Data */
           <>
-            {/* Tampilkan item yang sedang diunggah secara optimistis di atas */}
+            {/* Item yang sedang diunggah secara optimistis */}
             {uploadingItems.map((eq) => (
               <div
                 key={eq.id}
-                className="flex items-center gap-4 bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm opacity-60 animate-pulse relative"
+                className="flex items-center justify-between gap-4 bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm opacity-60 animate-pulse"
               >
-                <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-gray-100 border border-gray-100 flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={eq.foto_path}
-                    alt={eq.nama_alat}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <Loader2 className="w-5 h-5 text-brand-teal animate-spin" />
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-gray-100 border border-gray-100 flex items-center justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={eq.foto_path}
+                      alt={eq.nama_alat}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 text-brand-teal animate-spin" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-bold text-gray-900 text-[17px] leading-tight">
+                        {eq.nama_alat}
+                      </h3>
+                      <span className="bg-[#ccfbf1] text-[#0f766e] px-2 py-0.5 rounded-full text-[9px] font-extrabold tracking-wide flex items-center gap-1">
+                        Mengunggah...
+                      </span>
+                    </div>
+                    <p className="text-gray-500 text-[13px] leading-tight line-clamp-2">
+                      {eq.catatan_alat || "-"}
+                    </p>
                   </div>
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-gray-900 text-[17px] leading-tight">
-                      {eq.nama_alat}
-                    </h3>
-                    <span className="bg-[#ccfbf1] text-[#0f766e] px-2 py-0.5 rounded-full text-[9px] font-extrabold tracking-wide flex items-center gap-1">
-                      Mengunggah...
-                    </span>
-                  </div>
-                  <p className="text-gray-500 text-[13px] leading-tight line-clamp-2">
-                    {eq.catatan_alat || "-"}
-                  </p>
+                {/* Loader khusus saat sedang mengunggah */}
+                <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center shrink-0">
+                  <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
                 </div>
               </div>
             ))}
 
-            {/* Tampilkan item riil dari database */}
+            {/* Item riil dari database */}
             {equipments.map((eq) => (
-              <div
+              <Link
+                href={`/equipment/${eq.id}`}
                 key={eq.id}
-                className="flex items-center gap-4 bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm hover:border-gray-200 transition-colors"
+                className="flex items-center justify-between gap-4 bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm hover:border-gray-200 transition-all active:scale-[0.99] cursor-pointer flex"
               >
-                <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-gray-50 border border-gray-100 flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={eq.foto_path}
-                    alt={eq.nama_alat}
-                    className="w-full h-full object-cover"
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-gray-50 border border-gray-100 flex items-center justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={eq.foto_path}
+                      alt={eq.nama_alat}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-900 text-[17px] mb-1">
+                      {eq.nama_alat}
+                    </h3>
+                    <p className="text-gray-500 text-[13px] leading-tight line-clamp-2">
+                      {eq.catatan_alat || "-"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Tambahan checkmark lingkaran hijau di sisi kanan */}
+                <div className="w-10 h-10 bg-[#dbf5ef] rounded-full flex items-center justify-center shrink-0">
+                  <CheckCircle2
+                    className="w-6 h-6 text-brand-teal"
+                    strokeWidth={2.5}
                   />
                 </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-[17px] mb-1">
-                    {eq.nama_alat}
-                  </h3>
-                  <p className="text-gray-500 text-[13px] leading-tight line-clamp-2">
-                    {eq.catatan_alat || "-"}
-                  </p>
-                </div>
-              </div>
+              </Link>
             ))}
           </>
         )}
