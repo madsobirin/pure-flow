@@ -1,23 +1,23 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
-
-const connectionString = process.env.DATABASE_URL;
+import { PrismaNeon } from "@prisma/adapter-neon";
 
 // Singleton pattern to prevent too many Prisma Client instances in development
-// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/nextjs-help
-
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
+let prismaInstance: PrismaClient;
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({ adapter });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV === "production") {
+  // Gunakan adapter Neon serverless untuk environment produksi (Vercel)
+  const adapter = new PrismaNeon({
+    connectionString: process.env.DATABASE_URL,
+  });
+  prismaInstance = new PrismaClient({ adapter });
+} else {
+  // Gunakan inisialisasi lokal standar untuk development agar reload cepat
+  prismaInstance = globalForPrisma.prisma ?? new PrismaClient();
+  globalForPrisma.prisma = prismaInstance;
 }
+
+export const prisma = prismaInstance;
