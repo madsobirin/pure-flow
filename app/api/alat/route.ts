@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, unauthorizedResponse } from "@/lib/auth";
-import sharp from "sharp";
 import cloudinary from "@/lib/cloudinary";
 import type { UploadApiResponse, UploadApiErrorResponse } from "cloudinary";
 
@@ -11,6 +10,16 @@ const uploadFromBuffer = (buffer: Buffer): Promise<UploadApiResponse> => {
       {
         folder: "pure_flow",
         resource_type: "image",
+        // Kompresi & konversi ke WebP dilakukan oleh Cloudinary (serverless-safe)
+        transformation: [
+          {
+            width: 1200,
+            height: 1200,
+            crop: "limit",      // Setara fit:'inside' — tidak memperbesar
+            quality: "auto:good",
+            fetch_format: "webp",
+          },
+        ],
       },
       (
         error: UploadApiErrorResponse | undefined,
@@ -68,33 +77,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // --- Proses kompresi gambar menggunakan Sharp ---
+    // --- Baca buffer gambar asli (kompresi ditangani Cloudinary) ---
     const bytes = await fotoAlat.arrayBuffer();
-    const inputBuffer = Buffer.from(bytes);
+    const optimizedBuffer = Buffer.from(bytes);
 
-    let optimizedBuffer: Buffer;
-    try {
-      optimizedBuffer = await sharp(inputBuffer)
-        .resize({
-          width: 1200, // Maksimal lebar 1200px
-          height: 1200, // Maksimal tinggi 1200px
-          fit: "inside", // Jaga rasio aspek
-          withoutEnlargement: true, // Jangan perbesar jika gambar aslinya kecil
-        })
-        .webp({ quality: 75 }) // Konversi paksa ke WebP dengan kualitas 75%
-        .toBuffer();
-    } catch (sharpError) {
-      console.error("Error compressing image with sharp:", sharpError);
-      return Response.json(
-        {
-          success: false,
-          message: "Gagal memproses dan mengompresi gambar.",
-        },
-        { status: 500 },
-      );
-    }
-
-    // --- Upload ke Cloudinary ---
+    // --- Upload ke Cloudinary (transformasi otomatis di cloud) ---
     let fotoPath = "";
     try {
       const uploadResult = await uploadFromBuffer(optimizedBuffer);
