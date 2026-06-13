@@ -25,7 +25,7 @@ function RegistrationSuccessModal() {
 
   useEffect(() => {
     if (show) {
-      const timer = setTimeout(() => setShow(false), 1500);
+      const timer = setTimeout(() => setShow(false), 1000);
       return () => clearTimeout(timer);
     }
   }, [show]);
@@ -129,7 +129,7 @@ export default function LoginPage() {
       setTimeout(() => {
         router.push("/");
         router.refresh();
-      }, 1500);
+      }, 1000);
     } catch (error) {
       console.error("[Login Fetch Error]", error);
       setErrors({
