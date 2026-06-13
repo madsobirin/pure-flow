@@ -15,7 +15,8 @@ import {
 
 export default function AddEquipmentForm() {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   // States
   const [namaAlat, setNamaAlat] = useState("");
@@ -25,8 +26,12 @@ export default function AddEquipmentForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleTriggerFileInput = () => {
-    fileInputRef.current?.click();
+  const handleTriggerCamera = () => {
+    cameraInputRef.current?.click();
+  };
+
+  const handleTriggerGallery = () => {
+    galleryInputRef.current?.click();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +49,7 @@ export default function AddEquipmentForm() {
 
       setFotoFile(file);
       setError("");
-      
+
       // Revoke old object URL if exists
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
@@ -59,8 +64,11 @@ export default function AddEquipmentForm() {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
     }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    if (cameraInputRef.current) {
+      cameraInputRef.current.value = "";
+    }
+    if (galleryInputRef.current) {
+      galleryInputRef.current.value = "";
     }
   };
 
@@ -117,9 +125,7 @@ export default function AddEquipmentForm() {
         >
           <ArrowLeft className="w-5 h-5" strokeWidth={2} />
         </Link>
-        <h1 className="text-[19px] font-bold text-[#1a2332]">
-          Tambah Alat
-        </h1>
+        <h1 className="text-[19px] font-bold text-[#1a2332]">Tambah Alat</h1>
       </div>
 
       {error && (
@@ -148,10 +154,20 @@ export default function AddEquipmentForm() {
           />
         </div>
 
-        {/* Hidden File Input */}
+        {/* Hidden Camera Input */}
         <input
           type="file"
-          ref={fileInputRef}
+          ref={cameraInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+        />
+
+        {/* Hidden Gallery Input */}
+        <input
+          type="file"
+          ref={galleryInputRef}
           onChange={handleFileChange}
           accept="image/*"
           className="hidden"
@@ -162,7 +178,7 @@ export default function AddEquipmentForm() {
           <label className="block text-[13px] font-semibold text-gray-700 mb-2">
             Foto Alat
           </label>
-          
+
           {previewUrl ? (
             /* Selected Image Preview */
             <div className="relative border border-[#eef2f6] rounded-[24px] overflow-hidden aspect-video bg-gray-50 flex items-center justify-center group">
@@ -188,7 +204,7 @@ export default function AddEquipmentForm() {
                 {/* Kamera */}
                 <button
                   type="button"
-                  onClick={handleTriggerFileInput}
+                  onClick={handleTriggerCamera}
                   className="flex flex-col items-center gap-2 group cursor-pointer"
                   disabled={isLoading}
                 >
@@ -206,7 +222,7 @@ export default function AddEquipmentForm() {
                 {/* Galeri */}
                 <button
                   type="button"
-                  onClick={handleTriggerFileInput}
+                  onClick={handleTriggerGallery}
                   className="flex flex-col items-center gap-2 group cursor-pointer"
                   disabled={isLoading}
                 >
