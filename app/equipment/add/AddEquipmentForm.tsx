@@ -72,7 +72,7 @@ export default function AddEquipmentForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!namaAlat.trim()) {
       setError("Nama alat wajib diisi.");
@@ -83,37 +83,69 @@ export default function AddEquipmentForm() {
       return;
     }
 
-    setIsLoading(true);
     setError("");
 
-    try {
-      const formData = new FormData();
-      formData.append("nama_alat", namaAlat.trim());
-      formData.append("foto_alat", fotoFile);
-      if (catatanAlat.trim()) {
-        formData.append("catatan_alat", catatanAlat.trim());
-      }
+    const formData = new FormData();
+    formData.append("nama_alat", namaAlat.trim());
+    formData.append("foto_alat", fotoFile);
+    if (catatanAlat.trim()) {
+      formData.append("catatan_alat", catatanAlat.trim());
+    }
 
-      const response = await fetch("/api/alat", {
-        method: "POST",
-        body: formData,
+    // Buat item sementara (Optimistic UI)
+    const tempId = `temp-${Date.now()}`;
+    const tempItem = {
+      id: tempId,
+      nama_alat: namaAlat.trim(),
+      catatan_alat: catatanAlat.trim() || null,
+      foto_path: previewUrl || "",
+    };
+
+    // Simpan ke localStorage agar bisa dibaca di list page
+    if (typeof window !== "undefined") {
+      const currentTemp = JSON.parse(
+        localStorage.getItem("uploading_equipments") || "[]",
+      );
+      localStorage.setItem(
+        "uploading_equipments",
+        JSON.stringify([...currentTemp, tempItem]),
+      );
+    }
+
+    // Jalankan request di background tanpa await agar transisi halaman instan
+    fetch("/api/alat", {
+      method: "POST",
+      body: formData,
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const result = await res.json();
+          console.error("Background upload failed:", result.message);
+        }
+      })
+      .catch((err) => {
+        console.error("Background upload network error:", err);
+      })
+      .finally(() => {
+        // Bersihkan dari localStorage setelah selesai (sukses/gagal)
+        if (typeof window !== "undefined") {
+          const currentTemp = JSON.parse(
+            localStorage.getItem("uploading_equipments") || "[]",
+          );
+          const filtered = currentTemp.filter(
+            (item: any) => item.id !== tempId,
+          );
+          localStorage.setItem(
+            "uploading_equipments",
+            JSON.stringify(filtered),
+          );
+          // Kirim custom event agar list component melakukan re-fetch data riil
+          window.dispatchEvent(new Event("equipment-updated"));
+        }
       });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        // Redirect back to list
-        router.push("/equipment");
-        router.refresh();
-      } else {
-        setError(result.message || "Gagal menyimpan alat.");
-      }
-    } catch (err) {
-      console.error("Add equipment error:", err);
-      setError("Gagal terhubung ke server.");
-    } finally {
-      setIsLoading(false);
-    }
+    // Pindah halaman ke list secara instan!
+    router.push("/equipment");
   };
 
   return (

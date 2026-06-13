@@ -1,8 +1,35 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, unauthorizedResponse } from "@/lib/auth";
-import path from "path";
-import { writeFile, mkdir } from "fs/promises";
+import sharp from "sharp";
+import cloudinary from "@/lib/cloudinary";
+import type { UploadApiResponse, UploadApiErrorResponse } from "cloudinary";
+
+const uploadFromBuffer = (buffer: Buffer): Promise<UploadApiResponse> => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "pure_flow",
+        resource_type: "image",
+      },
+      (
+        error: UploadApiErrorResponse | undefined,
+        result: UploadApiResponse | undefined,
+      ) => {
+        if (error) return reject(error);
+        if (!result)
+          return reject(
+            new Error(
+              "Upload ke Cloudinary gagal, tidak ada hasil yang dikembalikan.",
+            ),
+          );
+
+        resolve(result);
+      },
+    );
+    uploadStream.end(buffer);
+  });
+};
 
 // ============================================================
 // POST /api/alat (Protected — Tambah Master Alat)
@@ -27,7 +54,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Field nama_alat wajib diisi.",
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
@@ -37,26 +64,51 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Field foto_alat (file gambar) wajib diunggah.",
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
-    // --- Simpan file gambar ---
-    // Placeholder: Simpan ke public/uploads/ (bisa diganti ke cloud storage nanti)
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadsDir, { recursive: true });
-
-    const timestamp = Date.now();
-    const safeFileName = fotoAlat.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const fileName = `${timestamp}_${safeFileName}`;
-    const filePath = path.join(uploadsDir, fileName);
-
+    // --- Proses kompresi gambar menggunakan Sharp ---
     const bytes = await fotoAlat.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
+    const inputBuffer = Buffer.from(bytes);
 
-    // Path yang disimpan di DB (relatif untuk akses frontend)
-    const fotoPath = `/uploads/${fileName}`;
+    let optimizedBuffer: Buffer;
+    try {
+      optimizedBuffer = await sharp(inputBuffer)
+        .resize({
+          width: 1200, // Maksimal lebar 1200px
+          height: 1200, // Maksimal tinggi 1200px
+          fit: "inside", // Jaga rasio aspek
+          withoutEnlargement: true, // Jangan perbesar jika gambar aslinya kecil
+        })
+        .webp({ quality: 75 }) // Konversi paksa ke WebP dengan kualitas 75%
+        .toBuffer();
+    } catch (sharpError) {
+      console.error("Error compressing image with sharp:", sharpError);
+      return Response.json(
+        {
+          success: false,
+          message: "Gagal memproses dan mengompresi gambar.",
+        },
+        { status: 500 },
+      );
+    }
+
+    // --- Upload ke Cloudinary ---
+    let fotoPath = "";
+    try {
+      const uploadResult = await uploadFromBuffer(optimizedBuffer);
+      fotoPath = uploadResult.secure_url;
+    } catch (uploadError) {
+      console.error("Cloudinary upload failed:", uploadError);
+      return Response.json(
+        {
+          success: false,
+          message: "Gagal mengunggah gambar ke cloud storage.",
+        },
+        { status: 500 },
+      );
+    }
 
     // --- Simpan ke database ---
     const alat = await prisma.alat.create({
@@ -74,7 +126,7 @@ export async function POST(request: NextRequest) {
         message: "Alat berhasil ditambahkan.",
         data: alat,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("[POST /api/alat]", error);
@@ -83,7 +135,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "Internal server error.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -110,7 +162,7 @@ export async function GET(request: NextRequest) {
         message: "Data alat berhasil diambil.",
         data: alatList,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[GET /api/alat]", error);
@@ -119,7 +171,7 @@ export async function GET(request: NextRequest) {
         success: false,
         message: "Internal server error.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
