@@ -135,7 +135,7 @@ export default function LogListClient({
             <Link
               href={`/log/${log.id}`}
               key={log.id}
-              className="flex items-center justify-between bg-white border border-[#eef2f6] rounded-[24px] p-5 shadow-sm hover:border-gray-200 transition-all active:scale-[0.99] cursor-pointer block"
+              className="flex items-center justify-between bg-white border border-[#eef2f6] rounded-[24px] p-5 shadow-sm hover:border-gray-200 transition-all active:scale-[0.99] cursor-pointer"
             >
               <div>
                 <h3 className="font-bold text-gray-900 text-[17px] mb-1">

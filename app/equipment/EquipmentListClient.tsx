@@ -151,7 +151,7 @@ export default function EquipmentListClient({
               <Link
                 href={`/equipment/${eq.id}`}
                 key={eq.id}
-                className="flex items-center justify-between gap-4 bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm hover:border-gray-200 transition-all active:scale-[0.99] cursor-pointer flex"
+                className="flex items-center justify-between gap-4 bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm hover:border-gray-200 transition-all active:scale-[0.99] cursor-pointer "
               >
                 <div className="flex items-center gap-4 flex-1">
                   <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-gray-50 border border-gray-100 flex items-center justify-center">

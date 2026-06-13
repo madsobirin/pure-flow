@@ -18,7 +18,7 @@ const NAV_ITEMS = [
 export default function BottomNav({ activeTab = "home" }: BottomNavProps) {
   return (
     // Mengubah pembungkus luar menjadi elemen <nav>
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center w-full">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 flex justify-center w-full">
       <div className="w-full max-w-md bg-white border-t border-gray-100 px-8 py-4 flex justify-between items-center pb-safe shadow-[0_-10px_20px_rgba(0,0,0,0.02)] sm:rounded-t-3xl md:rounded-b-[40px] md:bottom-2 md:w-[calc(100%-16px)]">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;

@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Edit3, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit3, Trash2, X, Eye } from "lucide-react";
 import ConfirmModal from "../../../components/dashboard/ConfirmModal";
 import SuccessOverlay from "../../../components/dashboard/SuccessOverlay";
-import { AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 interface AlatClientType {
   id: number;
@@ -27,6 +27,7 @@ export default function EquipmentDetailClient({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -72,13 +73,22 @@ export default function EquipmentDetailClient({
       {/* Main Card */}
       <div className="border border-[#eef2f6] rounded-3xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.015)] mb-6 bg-white overflow-hidden">
         {/* Gambar Alat */}
-        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 mb-6">
+        <div
+          onClick={() => setIsPreviewOpen(true)}
+          className="relative w-full aspect-video rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 mb-6 cursor-zoom-in hover:opacity-95 transition-opacity group"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={alat.foto_path}
             alt={alat.nama_alat}
             className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+            <span className="bg-black/60 text-white text-xs font-bold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 shadow-lg">
+              <Eye className="w-3.5 h-3.5" />
+              <span>Lihat Foto</span>
+            </span>
+          </div>
         </div>
 
         {/* Informasi Alat */}
@@ -147,6 +157,44 @@ export default function EquipmentDetailClient({
       <AnimatePresence>
         {showSuccessOverlay && (
           <SuccessOverlay message="Alat berhasil dihapus dari daftar Anda." />
+        )}
+      </AnimatePresence>
+
+      {/* Lightbox Preview Modal */}
+      <AnimatePresence>
+        {isPreviewOpen && (
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsPreviewOpen(false)}
+              className="fixed inset-0 bg-black/90 backdrop-blur-md"
+            />
+            {/* Image */}
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative max-w-full max-h-[85vh] z-10 flex items-center justify-center"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={alat.foto_path}
+                alt={alat.nama_alat}
+                className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl border border-white/10"
+              />
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setIsPreviewOpen(false)}
+                className="absolute -top-12 right-0 bg-white/10 hover:bg-white/20 text-white p-2.5 rounded-full transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </>
