@@ -42,7 +42,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Cek apakah password terdaftar (kasus pengguna mendaftar menggunakan Google)
-    if (!user.password) {
+    const hashedPassword = user.password;
+    if (!hashedPassword) {
       return Response.json(
         {
           success: false,
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     // --- Cek kecocokan password ---
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, hashedPassword);
 
     if (!isPasswordValid) {
       return Response.json(
