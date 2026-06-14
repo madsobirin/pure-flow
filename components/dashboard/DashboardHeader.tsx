@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Moon } from "lucide-react";
 import Buttonn from "../ui/Button";
 
 interface JwtPayload {

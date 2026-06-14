@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, unauthorizedResponse } from "@/lib/auth";
+import { unauthorizedResponse } from "@/lib/auth";
 
 export async function PUT(request: NextRequest) {
   try {
-    // Verify JWT token from cookie
-    const payload = verifyToken(request);
-    if (!payload) {
+    // Get user ID from headers injected by proxy middleware
+    const userIdStr = request.headers.get("x-user-id");
+    if (!userIdStr) {
       return unauthorizedResponse();
     }
+    const userId = parseInt(userIdStr, 10);
 
     const body = await request.json();
     const { name } = body;
@@ -26,7 +27,7 @@ export async function PUT(request: NextRequest) {
 
     // Update name in database
     const updatedUser = await prisma.user.update({
-      where: { id: payload.userId },
+      where: { id: userId },
       data: { name: name.trim() },
       select: {
         id: true,

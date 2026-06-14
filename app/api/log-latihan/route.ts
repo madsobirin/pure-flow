@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, unauthorizedResponse } from "@/lib/auth";
+import { unauthorizedResponse } from "@/lib/auth";
 
 // ============================================================
 // Types
@@ -20,8 +20,9 @@ interface LogLatihanBody {
 export async function POST(request: NextRequest) {
   try {
     // --- Auth check ---
-    const payload = verifyToken(request);
-    if (!payload) return unauthorizedResponse();
+    const userIdStr = request.headers.get("x-user-id");
+    if (!userIdStr) return unauthorizedResponse();
+    const userId = parseInt(userIdStr, 10);
 
     const body: LogLatihanBody = await request.json();
     const { alat_id, jumlah_set, jumlah_repetisi, catatan_latihan } = body;
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     const alat = await prisma.alat.findFirst({
       where: {
         id: alat_id,
-        user_id: payload.userId,
+        user_id: userId,
       },
     });
 
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
     // --- Simpan log latihan ---
     const logLatihan = await prisma.logLatihan.create({
       data: {
-        user_id: payload.userId,
+        user_id: userId,
         alat_id,
         jumlah_set,
         jumlah_repetisi,
@@ -102,8 +103,9 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     // --- Auth check ---
-    const payload = verifyToken(request);
-    if (!payload) return unauthorizedResponse();
+    const userIdStr = request.headers.get("x-user-id");
+    if (!userIdStr) return unauthorizedResponse();
+    const userId = parseInt(userIdStr, 10);
 
     // --- Parse query parameter ---
     const { searchParams } = new URL(request.url);
@@ -142,7 +144,7 @@ export async function GET(request: NextRequest) {
       // --- Query log latihan berdasarkan user_id DAN range bulan ---
       logs = await prisma.logLatihan.findMany({
         where: {
-          user_id: payload.userId,
+          user_id: userId,
           tanggal_latihan: {
             gte: startOfMonth,
             lte: endOfMonth,
@@ -188,7 +190,7 @@ export async function GET(request: NextRequest) {
       // --- Query log latihan berdasarkan user_id DAN tanggal ---
       logs = await prisma.logLatihan.findMany({
         where: {
-          user_id: payload.userId,
+          user_id: userId,
           tanggal_latihan: {
             gte: startOfDay,
             lte: endOfDay,

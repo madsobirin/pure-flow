@@ -133,7 +133,7 @@ export default function AddEquipmentForm() {
             localStorage.getItem("uploading_equipments") || "[]",
           );
           const filtered = currentTemp.filter(
-            (item: any) => item.id !== tempId,
+            (item: { id: string }) => item.id !== tempId,
           );
           localStorage.setItem(
             "uploading_equipments",

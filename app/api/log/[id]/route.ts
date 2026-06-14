@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, unauthorizedResponse } from "@/lib/auth";
+import { unauthorizedResponse } from "@/lib/auth";
 
 interface UpdateLogBody {
   alat_id?: number;
@@ -18,8 +18,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const payload = verifyToken(request);
-    if (!payload) return unauthorizedResponse();
+    const userIdStr = request.headers.get("x-user-id");
+    if (!userIdStr) return unauthorizedResponse();
+    const userId = parseInt(userIdStr, 10);
 
     const { id } = await params;
     const logId = parseInt(id);
@@ -32,7 +33,7 @@ export async function PUT(
 
     // Pastikan log tersebut milik user yang request
     const existingLog = await prisma.logLatihan.findFirst({
-      where: { id: logId, user_id: payload.userId },
+      where: { id: logId, user_id: userId },
     });
 
     if (!existingLog) {
@@ -48,7 +49,7 @@ export async function PUT(
     // Validasi input minimal
     if (alat_id !== undefined) {
       const existingAlat = await prisma.alat.findFirst({
-        where: { id: alat_id, user_id: payload.userId },
+        where: { id: alat_id, user_id: userId },
       });
       if (!existingAlat) {
         return Response.json(
@@ -91,8 +92,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const payload = verifyToken(request);
-    if (!payload) return unauthorizedResponse();
+    const userIdStr = request.headers.get("x-user-id");
+    if (!userIdStr) return unauthorizedResponse();
+    const userId = parseInt(userIdStr, 10);
 
     const { id } = await params;
     const logId = parseInt(id);
@@ -105,7 +107,7 @@ export async function DELETE(
 
     // Pastikan log tersebut milik user yang request
     const existingLog = await prisma.logLatihan.findFirst({
-      where: { id: logId, user_id: payload.userId },
+      where: { id: logId, user_id: userId },
     });
 
     if (!existingLog) {

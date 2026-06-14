@@ -1,33 +1,16 @@
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import ProfileClient from "./ProfileClient";
 
-interface JwtPayload {
-  userId: number;
-  email: string;
-}
-
 export default async function ProfilePage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
+  const headersList = await headers();
+  const userIdStr = headersList.get("x-user-id");
 
-  if (!token) {
+  if (!userIdStr) {
     return <ProfileClient isLoggedIn={false} />;
   }
 
-  let userId: number;
-  try {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      throw new Error("JWT_SECRET is not defined in environment variables");
-    }
-    const decoded = jwt.verify(token, secret) as JwtPayload;
-    userId = decoded.userId;
-  } catch (error) {
-    console.error("JWT verification failed in profile page:", error);
-    return <ProfileClient isLoggedIn={false} />;
-  }
+  const userId = parseInt(userIdStr, 10);
 
   // Fetch user data from database
   const user = await prisma.user.findUnique({

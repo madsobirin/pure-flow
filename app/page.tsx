@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -16,30 +15,15 @@ import RecentActivity from "../components/dashboard/RecentActivity";
 // Komponen Skeleton Baru
 import DashboardSkeleton from "../components/dashboard/DashboardSkeleton";
 
-interface JwtPayload {
-  userId: number;
-  email: string;
-}
-
 export default async function HomePage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
+  const headersList = await headers();
+  const userIdStr = headersList.get("x-user-id");
 
-  // Proteksi Halaman Instan (Tanpa nunggu query DB)
-  if (!token) {
+  if (!userIdStr) {
     redirect("/login");
   }
 
-  let userId: number;
-  try {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error("JWT_SECRET missing");
-    const decoded = jwt.verify(token, secret) as JwtPayload;
-    userId = decoded.userId;
-  } catch (error) {
-    console.error("JWT verification failed:", error);
-    redirect("/login");
-  }
+  const userId = parseInt(userIdStr, 10);
 
   return (
     <div className="min-h-screen bg-[#faf9f6] flex justify-center w-full">

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, unauthorizedResponse } from "@/lib/auth";
+import { unauthorizedResponse } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
 import type { UploadApiResponse, UploadApiErrorResponse } from "cloudinary";
 
@@ -47,8 +47,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const payload = verifyToken(request);
-    if (!payload) return unauthorizedResponse();
+    const userIdStr = request.headers.get("x-user-id");
+    if (!userIdStr) return unauthorizedResponse();
+    const userId = parseInt(userIdStr, 10);
 
     const { id } = await params;
     const alatId = parseInt(id);
@@ -61,7 +62,7 @@ export async function PUT(
 
     // Pastikan alat tersebut milik user yang request
     const existingAlat = await prisma.alat.findFirst({
-      where: { id: alatId, user_id: payload.userId },
+      where: { id: alatId, user_id: userId },
     });
 
     if (!existingAlat) {
@@ -134,8 +135,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const payload = verifyToken(request);
-    if (!payload) return unauthorizedResponse();
+    const userIdStr = request.headers.get("x-user-id");
+    if (!userIdStr) return unauthorizedResponse();
+    const userId = parseInt(userIdStr, 10);
 
     const { id } = await params;
     const alatId = parseInt(id);
@@ -148,7 +150,7 @@ export async function DELETE(
 
     // Pastikan alat tersebut milik user yang request
     const existingAlat = await prisma.alat.findFirst({
-      where: { id: alatId, user_id: payload.userId },
+      where: { id: alatId, user_id: userId },
     });
 
     if (!existingAlat) {

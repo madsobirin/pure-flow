@@ -50,24 +50,6 @@ export default function ProfileClient({
   const [editError, setEditError] = useState("");
   const [isEditingLoading, setIsEditingLoading] = useState(false);
 
-  // Handle unit toggle
-  // const toggleUnit = () => {
-  //   if (!isLoggedIn) return;
-  //   setPreferences((prev) => ({
-  //     ...prev,
-  //     unit: prev.unit === "kg" ? "lbs" : "kg",
-  //   }));
-  // };
-
-  // Handle notification toggle
-  // const toggleNotifications = () => {
-  //   if (!isLoggedIn) return;
-  //   setPreferences((prev) => ({
-  //     ...prev,
-  //     notifications: !prev.notifications,
-  //   }));
-  // };
-
   // Handle logout
   const handleLogout = async () => {
     setIsLoading(true);
