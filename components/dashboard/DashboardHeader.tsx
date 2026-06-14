@@ -2,7 +2,8 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Settings } from "lucide-react";
+import { Moon } from "lucide-react";
+import Buttonn from "../ui/Button";
 
 interface JwtPayload {
   userId: number;
@@ -75,12 +76,7 @@ export default async function DashboardHeader() {
         )}
       </Link>
 
-      <Link
-        href="/profile"
-        className="text-gray-700 hover:text-gray-900 hover:scale-105 transition-all duration-200 focus:outline-none"
-      >
-        <Settings className="w-6 h-6" strokeWidth={1.5} />
-      </Link>
+      <Buttonn />
     </div>
   );
 }

@@ -8,15 +8,11 @@ import {
   ArrowLeft,
   User,
   Mail,
-  Calendar,
   Dumbbell,
   ClipboardList,
   LogOut,
   ChevronRight,
   Shield,
-  Bell,
-  Scale,
-  Sparkles,
   Loader2,
   Lock,
   UserX,
@@ -47,11 +43,6 @@ export default function ProfileClient({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [preferences] = useState({
-    unit: "kg",
-    notifications: true,
-    weeklyGoal: "4 kali",
-  });
   // Edit profile states
   const [currentName, setCurrentName] = useState(user?.name || "");
   const [showEditNameModal, setShowEditNameModal] = useState(false);
@@ -67,10 +58,6 @@ export default function ProfileClient({
   //     unit: prev.unit === "kg" ? "lbs" : "kg",
   //   }));
   // };
-  const toggleUnit = () => {
-    alert("Fitur ini belum tersedia.");
-    return;
-  };
 
   // Handle notification toggle
   // const toggleNotifications = () => {
@@ -80,10 +67,6 @@ export default function ProfileClient({
   //     notifications: !prev.notifications,
   //   }));
   // };
-  const toggleNotifications = () => {
-    alert("Fitur ini belum tersedia.");
-    return;
-  };
 
   // Handle logout
   const handleLogout = async () => {
@@ -299,11 +282,6 @@ export default function ProfileClient({
                     <Pencil className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity" />
                   </div>
 
-                  <p className="text-teal-100/95 text-xs font-bold mb-3.5 flex items-center gap-1.5 bg-white/15 px-3 py-1 rounded-full backdrop-blur-sm">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Fitness Enthusiast
-                  </p>
-
                   <span className="text-[10px] text-teal-100/70 font-semibold tracking-wider uppercase">
                     Member Sejak {user?.memberSince}
                   </span>
@@ -398,84 +376,6 @@ export default function ProfileClient({
                       <div className="bg-teal-50 text-brand-teal text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
                         <Shield className="w-3 h-3" />
                         Terverifikasi
-                      </div>
-                    </div>
-
-                    {/* Weight Unit Preference */}
-                    <div
-                      onClick={toggleUnit}
-                      className="flex items-center justify-between px-5 py-4.5 hover:bg-[#faf9f6]/40 cursor-pointer active:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <div className="text-gray-400">
-                          <Scale className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <span className="text-sm font-bold text-gray-800 block">
-                            Satuan Berat
-                          </span>
-                          <span className="text-xs font-semibold text-gray-500">
-                            Satuan default untuk beban latihan
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm font-extrabold text-brand-teal uppercase bg-brand-teal-light px-2.5 py-1 rounded-lg">
-                          {preferences.unit}
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-gray-300" />
-                      </div>
-                    </div>
-
-                    {/* Notifications Toggle */}
-                    <div
-                      onClick={toggleNotifications}
-                      className="flex items-center justify-between px-5 py-4.5 hover:bg-[#faf9f6]/40 cursor-pointer active:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3.5">
-                        <div className="text-gray-400">
-                          <Bell className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <span className="text-sm font-bold text-gray-800 block">
-                            Notifikasi Pengingat
-                          </span>
-                          <span className="text-xs font-semibold text-gray-500">
-                            Kirim pengingat latihan harian
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 cursor-pointer ${preferences.notifications ? "bg-brand-teal" : "bg-gray-200"}`}
-                        >
-                          <div
-                            className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${preferences.notifications ? "translate-x-5" : "translate-x-0"}`}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Goal Settings */}
-                    <div className="flex items-center justify-between px-5 py-4.5 hover:bg-[#faf9f6]/40 cursor-pointer active:bg-gray-50 transition-colors">
-                      <div className="flex items-center gap-3.5">
-                        <div className="text-gray-400">
-                          <Calendar className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <span className="text-sm font-bold text-gray-800 block">
-                            Target Mingguan
-                          </span>
-                          <span className="text-xs font-semibold text-gray-500">
-                            Tentukan frekuensi latihan Anda
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2.5 py-1.5 rounded-lg">
-                          {preferences.weeklyGoal} / mg
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-gray-300" />
                       </div>
                     </div>
                   </div>
