@@ -79,6 +79,10 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  const handleGoogleLogin = () => {
+    window.location.href = "/api/auth/google";
+  };
+
   const validateLogin = () => {
     const result = loginSchema.safeParse({ email, password });
 
@@ -282,6 +286,7 @@ export default function LoginPage() {
           {/* Google Sign-in button */}
           <button
             id="btn_google_login"
+            onClick={handleGoogleLogin}
             disabled={isLoading}
             className="w-full bg-brand-teal hover:bg-brand-teal-dark text-white rounded-[16px] py-4 px-6 font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-200 cursor-pointer disabled:opacity-80"
           >

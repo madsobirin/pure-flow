@@ -79,7 +79,8 @@ export default async function proxy(request: NextRequest) {
     pathname === "/register" ||
     pathname.startsWith("/api/auth/login") ||
     pathname.startsWith("/api/auth/register") ||
-    pathname.startsWith("/api/auth/logout");
+    pathname.startsWith("/api/auth/logout") ||
+    pathname.startsWith("/api/auth/google");
 
   const token = request.cookies.get("auth_token")?.value;
   const secret = process.env.JWT_SECRET || "";

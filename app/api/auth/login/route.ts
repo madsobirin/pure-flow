@@ -41,6 +41,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Cek apakah password terdaftar (kasus pengguna mendaftar menggunakan Google)
+    if (!user.password) {
+      return Response.json(
+        {
+          success: false,
+          message:
+            "Akun ini terdaftar menggunakan Google. Silakan masuk menggunakan Google.",
+        },
+        { status: 400 },
+      );
+    }
+
     // --- Cek kecocokan password ---
     const isPasswordValid = await bcrypt.compare(password, user.password);
 

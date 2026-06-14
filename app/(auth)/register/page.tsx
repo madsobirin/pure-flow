@@ -29,6 +29,10 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  const handleGoogleLogin = () => {
+    window.location.href = "/api/auth/google";
+  };
+
   const validateSignUp = () => {
     const result = registerSchema.safeParse({
       namaLengkap: signUpName,
@@ -277,6 +281,7 @@ export default function RegisterPage() {
             {/* Google Sign-in button */}
             <button
               id="btn_google_signup"
+              onClick={handleGoogleLogin}
               disabled={isLoading}
               className="w-full bg-brand-teal hover:bg-brand-teal-dark text-white rounded-[16px] py-4 px-6 font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-200 cursor-pointer disabled:opacity-80"
             >
