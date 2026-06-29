@@ -172,7 +172,9 @@ export default function LogListClient({
                 </h3>
                 <p className="text-gray-500 text-[13px] mb-2">
                   {log.sets} Sets • {log.reps} Reps
-                  {log.berat_alat !== null && log.berat_alat !== undefined && ` • ${log.berat_alat} kg`}
+                  {log.berat_alat !== null &&
+                    log.berat_alat !== undefined &&
+                    ` • ${log.berat_alat} kg`}
                 </p>
                 <p className="text-[11px] font-semibold text-brand-teal">
                   {log.date} - {log.time}

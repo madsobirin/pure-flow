@@ -33,8 +33,24 @@ export default async function LogListPage() {
     redirect("/login");
   }
 
+  const todayStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+
+  const startOfDayLocal = new Date(new Date(`${todayStr}T00:00:00.000Z`).getTime() - 7 * 60 * 60 * 1000);
+  const endOfDayLocal = new Date(new Date(`${todayStr}T23:59:59.999Z`).getTime() - 7 * 60 * 60 * 1000);
+
   const logsFromDb = await prisma.logLatihan.findMany({
-    where: { user_id: userId },
+    where: {
+      user_id: userId,
+      tanggal_latihan: {
+        gte: startOfDayLocal,
+        lte: endOfDayLocal,
+      },
+    },
     include: {
       alat: {
         select: {

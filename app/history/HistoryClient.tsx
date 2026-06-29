@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
@@ -272,9 +273,10 @@ export default function HistoryClient() {
           </div>
         ) : (
           selectedDayLogs.map((log) => (
-            <div
+            <Link
+              href={`/log/${log.id}`}
               key={log.id}
-              className="bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm flex items-start gap-4 relative"
+              className="bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm flex items-start gap-4 relative hover:border-gray-200 transition-all active:scale-[0.99] cursor-pointer"
             >
               <div className="w-[72px] h-[72px] rounded-[16px] overflow-hidden shrink-0 bg-gray-50 border border-gray-100 flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -313,7 +315,7 @@ export default function HistoryClient() {
               <div className="absolute top-5 right-5 w-7 h-7 bg-[#ccfbf1] rounded-full flex items-center justify-center">
                 <Check className="w-4 h-4 text-[#0d9488]" strokeWidth={4} />
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>

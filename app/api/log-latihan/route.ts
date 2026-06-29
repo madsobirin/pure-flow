@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           message:
-            "Field alat_id, jumlah_set, jumlah_repetisi, dan berat_alat wajib diisi.",
+            "Field jumlah set, jumlah repetisi, dan berat alat wajib diisi.",
         },
         { status: 422 },
       );
@@ -193,9 +193,13 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      // --- Buat range tanggal (awal hari - akhir hari) ---
-      const startOfDay = new Date(`${tanggal}T00:00:00.000Z`);
-      const endOfDay = new Date(`${tanggal}T23:59:59.999Z`);
+      // --- Buat range tanggal (awal hari - akhir hari) dalam timezone Asia/Jakarta (UTC+7) ---
+      const startOfDay = new Date(
+        new Date(`${tanggal}T00:00:00.000Z`).getTime() - 7 * 60 * 60 * 1000,
+      );
+      const endOfDay = new Date(
+        new Date(`${tanggal}T23:59:59.999Z`).getTime() - 7 * 60 * 60 * 1000,
+      );
 
       // --- Query log latihan berdasarkan user_id DAN tanggal ---
       logs = await prisma.logLatihan.findMany({
