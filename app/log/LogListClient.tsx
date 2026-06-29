@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Plus, CheckCircle2 } from "lucide-react";
+import { formatLocalDate, formatLocalTime } from "@/lib/date";
 
 // 1. Tipe data hasil format untuk State UI
 interface LogType {
@@ -44,37 +45,16 @@ export default function LogListClient({
             // Cast response json agar strukturnya jelas
             const json = (await res.json()) as { data: RawLogType[] };
 
-            const dateOptions: Intl.DateTimeFormatOptions = {
-              weekday: "long",
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            };
-            const timeOptions: Intl.DateTimeFormatOptions = {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false,
-            };
-
             // Menghapus 'any' dan menggantinya dengan 'RawLogType'
             const formatted = (json.data || []).map(
               (log: RawLogType): LogType => {
-                const dateObj = new Date(log.tanggal_latihan);
-                const dateStr = new Intl.DateTimeFormat(
-                  "id-ID",
-                  dateOptions,
-                ).format(dateObj);
-                const timeStr = new Intl.DateTimeFormat("id-ID", timeOptions)
-                  .format(dateObj)
-                  .replace(":", ".");
-
                 return {
                   id: log.id,
                   name: log.alat?.nama_alat || "Alat Terhapus",
                   sets: log.jumlah_set,
                   reps: log.jumlah_repetisi,
-                  date: dateStr,
-                  time: timeStr,
+                  date: formatLocalDate(log.tanggal_latihan),
+                  time: formatLocalTime(log.tanggal_latihan),
                 };
               },
             );

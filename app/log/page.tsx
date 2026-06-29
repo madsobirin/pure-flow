@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { formatLocalDate, formatLocalTime } from "@/lib/date";
 import DashboardHeader from "../../components/dashboard/DashboardHeader";
 import BottomNav from "../../components/dashboard/BottomNav";
 import LogListClient from "./LogListClient";
@@ -44,32 +45,14 @@ export default async function LogListPage() {
     orderBy: { tanggal_latihan: "desc" },
   });
 
-  const dateOptions: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  };
-  const timeOptions: Intl.DateTimeFormatOptions = {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  };
-
   const logs = logsFromDb.map((log) => {
-    const dateObj = new Date(log.tanggal_latihan);
-    const dateStr = new Intl.DateTimeFormat("id-ID", dateOptions).format(dateObj);
-    const timeStr = new Intl.DateTimeFormat("id-ID", timeOptions)
-      .format(dateObj)
-      .replace(":", ".");
-
     return {
       id: log.id,
       name: log.alat?.nama_alat || "Alat Terhapus",
       sets: log.jumlah_set,
       reps: log.jumlah_repetisi,
-      date: dateStr,
-      time: timeStr,
+      date: formatLocalDate(log.tanggal_latihan),
+      time: formatLocalTime(log.tanggal_latihan),
     };
   });
 

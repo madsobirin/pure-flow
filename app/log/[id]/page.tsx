@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
+import { formatLocalDate, formatLocalTime, longDateOptions } from "@/lib/date";
 import type { Metadata } from "next";
 import DashboardHeader from "../../../components/dashboard/DashboardHeader";
 import BottomNav from "../../../components/dashboard/BottomNav";
@@ -85,30 +86,14 @@ export default async function LogDetailPage({
     notFound();
   }
 
-  const dateOptions: Intl.DateTimeFormatOptions = {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  };
-  const timeOptions: Intl.DateTimeFormatOptions = {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  };
-
-  const dateObj = new Date(log.tanggal_latihan);
-  const dateStr = new Intl.DateTimeFormat("id-ID", dateOptions).format(dateObj);
-  const timeStr = new Intl.DateTimeFormat("id-ID", timeOptions).format(dateObj).replace(":", ".");
-
   const formattedLog = {
     id: log.id,
     jumlah_set: log.jumlah_set,
     jumlah_repetisi: log.jumlah_repetisi,
     catatan_latihan: log.catatan_latihan,
     tanggal_latihan: log.tanggal_latihan.toISOString(),
-    formattedDate: dateStr,
-    formattedTime: timeStr,
+    formattedDate: formatLocalDate(log.tanggal_latihan, longDateOptions),
+    formattedTime: formatLocalTime(log.tanggal_latihan),
     alat: log.alat ? {
       id: log.alat.id,
       nama_alat: log.alat.nama_alat,
