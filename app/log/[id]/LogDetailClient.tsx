@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Edit3, Trash2, Calendar, Clock, ClipboardList } from "lucide-react";
 import ConfirmModal from "../../../components/dashboard/ConfirmModal";
 import SuccessOverlay from "../../../components/dashboard/SuccessOverlay";
-import { AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 interface AlatType {
   id: number;
@@ -35,6 +35,7 @@ export default function LogDetailClient({ log }: LogDetailClientProps) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+  const [isImageZoomed, setIsImageZoomed] = useState(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -83,7 +84,11 @@ export default function LogDetailClient({ log }: LogDetailClientProps) {
         {/* Visual Info Alat */}
         {log.alat ? (
           <div className="flex items-center gap-4 p-4 border border-gray-100 rounded-[24px] bg-gray-50 mb-6">
-            <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-white border border-gray-200 flex items-center justify-center">
+            <div 
+              className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-white border border-gray-200 flex items-center justify-center cursor-zoom-in hover:scale-105 active:scale-95 transition-all duration-200"
+              onClick={() => setIsImageZoomed(true)}
+              title="Click to zoom image"
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={log.alat.foto_path}
@@ -205,6 +210,38 @@ export default function LogDetailClient({ log }: LogDetailClientProps) {
       <AnimatePresence>
         {showSuccessOverlay && (
           <SuccessOverlay message="Catatan sesi latihan berhasil dihapus." />
+        )}
+      </AnimatePresence>
+
+      {/* Zoomed Image Modal */}
+      <AnimatePresence>
+        {isImageZoomed && log.alat && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm cursor-zoom-out"
+            onClick={() => setIsImageZoomed(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="relative max-w-[90vw] max-h-[80vh] overflow-hidden rounded-3xl border border-white/10 shadow-2xl bg-black"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={log.alat.foto_path}
+                alt={log.alat.nama_alat}
+                className="w-full h-auto max-h-[80vh] object-contain"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 text-center">
+                <h4 className="text-white font-bold text-lg">{log.alat.nama_alat}</h4>
+                <p className="text-gray-300 text-xs mt-1">Tap anywhere to close</p>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

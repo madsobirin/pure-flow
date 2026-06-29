@@ -55,6 +55,7 @@ export default async function LogListPage() {
       alat: {
         select: {
           nama_alat: true,
+          foto_path: true,
         },
       },
     },
@@ -65,6 +66,7 @@ export default async function LogListPage() {
     return {
       id: log.id,
       name: log.alat?.nama_alat || "Alat Terhapus",
+      image: log.alat?.foto_path || null,
       sets: log.jumlah_set,
       reps: log.jumlah_repetisi,
       berat_alat: log.berat_alat,

@@ -5,11 +5,13 @@ import Link from "next/link";
 import { Plus, CheckCircle2 } from "lucide-react";
 import { formatLocalDate, formatLocalTime } from "@/lib/date";
 import { FiSearch } from "react-icons/fi";
+import Image from "next/image";
 
 // 1. Tipe data hasil format untuk State UI
 interface LogType {
   id: number;
   name: string;
+  image: string | null;
   sets: number;
   reps: number;
   berat_alat: number | null;
@@ -26,6 +28,7 @@ interface RawLogType {
   berat_alat: number | null;
   alat?: {
     nama_alat: string;
+    foto_path: string;
   } | null;
 }
 
@@ -59,6 +62,7 @@ export default function LogListClient({
                 return {
                   id: log.id,
                   name: log.alat?.nama_alat || "Alat Terhapus",
+                  image: log.alat?.foto_path || null,
                   sets: log.jumlah_set,
                   reps: log.jumlah_repetisi,
                   berat_alat: log.berat_alat,
@@ -164,21 +168,37 @@ export default function LogListClient({
             <Link
               href={`/log/${log.id}`}
               key={log.id}
-              className="flex items-center justify-between bg-white border border-[#eef2f6] rounded-[24px] p-5 shadow-sm hover:border-gray-200 transition-all active:scale-[0.99] cursor-pointer"
+              className="flex items-center justify-between bg-white border border-[#eef2f6] rounded-[24px] p-4 shadow-sm hover:border-gray-200 transition-all active:scale-[0.99] cursor-pointer"
             >
-              <div>
-                <h3 className="font-bold text-gray-900 text-[17px] mb-1">
-                  {log.name}
-                </h3>
-                <p className="text-gray-500 text-[13px] mb-2">
-                  {log.sets} Sets • {log.reps} Reps
-                  {log.berat_alat !== null &&
-                    log.berat_alat !== undefined &&
-                    ` • ${log.berat_alat} kg`}
-                </p>
-                <p className="text-[11px] font-semibold text-brand-teal">
-                  {log.date} - {log.time}
-                </p>
+              <div className="flex items-center gap-4">
+                <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 bg-gray-50 border border-gray-100 flex items-center justify-center bg-white">
+                  {log.image ? (
+                    <Image
+                      src={log.image}
+                      alt={log.name}
+                      width={100}
+                      height={100}
+                      className="w-full h-full object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-400">N/A</span>
+                  )}
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-[17px] mb-1">
+                    {log.name}
+                  </h3>
+                  <p className="text-gray-500 text-[13px] mb-2">
+                    {log.sets} Sets • {log.reps} Reps
+                    {log.berat_alat !== null &&
+                      log.berat_alat !== undefined &&
+                      ` • ${log.berat_alat} kg`}
+                  </p>
+                  <p className="text-[11px] font-semibold text-brand-teal">
+                    {log.date} - {log.time}
+                  </p>
+                </div>
               </div>
               <div className="w-10 h-10 bg-[#dbf5ef] rounded-full flex items-center justify-center shrink-0">
                 <CheckCircle2
