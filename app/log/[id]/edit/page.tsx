@@ -52,7 +52,7 @@ export default async function EditLogPage({
   // Ambil daftar alat milik user untuk dropdown pilihan alat
   const equipments = await prisma.alat.findMany({
     where: { user_id: userId },
-    select: { id: true, nama_alat: true },
+    select: { id: true, nama_alat: true, foto_path: true },
     orderBy: { nama_alat: "asc" },
   });
 
@@ -69,6 +69,7 @@ export default async function EditLogPage({
   const formattedEquipments = equipments.map((eq) => ({
     id: eq.id,
     nama_alat: eq.nama_alat,
+    foto_path: eq.foto_path,
   }));
 
   return (

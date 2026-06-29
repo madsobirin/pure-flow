@@ -39,6 +39,7 @@ export default async function AddLogPage() {
     select: {
       id: true,
       nama_alat: true,
+      foto_path: true,
     },
     orderBy: { nama_alat: "asc" },
   });

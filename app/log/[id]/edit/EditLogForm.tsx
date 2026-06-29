@@ -3,13 +3,14 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Loader2, AlertCircle, ChevronDown } from "lucide-react";
 import SuccessOverlay from "../../../../components/dashboard/SuccessOverlay";
 import { AnimatePresence } from "motion/react";
 
 interface AlatDropdownType {
   id: number;
   nama_alat: string;
+  foto_path: string;
 }
 
 interface LogEditType {
@@ -53,6 +54,7 @@ export default function EditLogForm({ log, equipments }: EditLogFormProps) {
   const [tanggalLatihan, setTanggalLatihan] = useState(
     formatDateTimeLocal(log.tanggal_latihan),
   );
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
@@ -141,22 +143,78 @@ export default function EditLogForm({ log, equipments }: EditLogFormProps) {
             <label className="block text-[13px] font-semibold text-gray-700 mb-2">
               Pilih Alat
             </label>
-            <select
-              value={alatId}
-              onChange={(e) => {
-                setAlatId(parseInt(e.target.value));
-                if (error) setError("");
-              }}
-              className="w-full bg-field-bg border-none rounded-2xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all cursor-pointer"
-              disabled={isLoading}
-            >
-              <option value="">-- Pilih Alat --</option>
-              {equipments.map((eq) => (
-                <option key={eq.id} value={eq.id}>
-                  {eq.nama_alat}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              {/* Custom Select Button */}
+              <button
+                type="button"
+                onClick={() => !isLoading && setIsDropdownOpen(!isDropdownOpen)}
+                disabled={isLoading}
+                className="w-full bg-field-bg border-none rounded-2xl px-4 py-3.5 text-sm text-gray-700 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all font-medium cursor-pointer disabled:opacity-50"
+              >
+                {(() => {
+                  const selectedEquipment = equipments.find((eq) => eq.id === Number(alatId));
+                  return selectedEquipment ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white">
+                        <img
+                          src={selectedEquipment.foto_path}
+                          alt={selectedEquipment.nama_alat}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span>{selectedEquipment.nama_alat}</span>
+                    </div>
+                  ) : (
+                    <span className="text-gray-400">Pilih alat dari daftar...</span>
+                  );
+                })()}
+                <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {/* Dropdown Options Menu */}
+              {isDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setIsDropdownOpen(false)}
+                  />
+                  
+                  <div className="absolute left-0 right-0 mt-2 bg-white border border-[#eef2f6] rounded-[20px] shadow-xl z-20 max-h-[250px] overflow-y-auto p-2 space-y-1">
+                    {equipments.length === 0 ? (
+                      <div className="px-4 py-3 text-xs text-gray-400 text-center font-medium">
+                        Belum ada alat olahraga.
+                      </div>
+                    ) : (
+                      equipments.map((eq) => (
+                        <button
+                          key={eq.id}
+                          type="button"
+                          onClick={() => {
+                            setAlatId(eq.id);
+                            setIsDropdownOpen(false);
+                            if (error) setError("");
+                          }}
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-[12px] text-[14px] font-medium text-left transition-all ${
+                            Number(alatId) === eq.id
+                              ? "bg-[#dbf5ef] text-[#0d9488]"
+                              : "text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white">
+                            <img
+                              src={eq.foto_path}
+                              alt={eq.nama_alat}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <span>{eq.nama_alat}</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Jumlah Set */}

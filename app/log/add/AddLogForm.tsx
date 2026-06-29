@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ChevronDown,
@@ -16,6 +17,7 @@ import {
 interface EquipmentOption {
   id: number;
   nama_alat: string;
+  foto_path: string;
 }
 
 interface AddLogFormProps {
@@ -31,6 +33,7 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
 
   // Form states
   const [alatId, setAlatId] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [sets, setSets] = useState(1);
   const [reps, setReps] = useState(1);
   const [beratAlat, setBeratAlat] = useState("");
@@ -166,27 +169,86 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
             PILIH ALAT
           </label>
           <div className="relative">
-            <select
-              value={alatId}
-              onChange={(e) => {
-                setAlatId(e.target.value);
-                if (error) setError("");
-              }}
-              className="w-full bg-field-bg border-none rounded-[16px] px-5 py-4 text-[14px] text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all font-medium pr-10 cursor-pointer"
+            {/* Custom Select Button */}
+            <button
+              type="button"
+              onClick={() => !isLoading && setIsDropdownOpen(!isDropdownOpen)}
               disabled={isLoading}
+              className="w-full bg-field-bg border-none rounded-[16px] px-5 py-3.5 text-[14px] text-gray-700 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all font-medium cursor-pointer disabled:opacity-50"
             >
-              <option value="" disabled>
-                Pilih alat dari daftar...
-              </option>
-              {equipments.map((eq) => (
-                <option key={eq.id} value={eq.id}>
-                  {eq.nama_alat}
-                </option>
-              ))}
-            </select>
-            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
-              <ChevronDown className="w-5 h-5 text-gray-500" />
-            </div>
+              {(() => {
+                const selectedEquipment = equipments.find(
+                  (eq) => eq.id === Number(alatId),
+                );
+                return selectedEquipment ? (
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white">
+                      <Image
+                        src={selectedEquipment.foto_path}
+                        alt={selectedEquipment.nama_alat}
+                        className="w-full h-full object-cover"
+                        height={150}
+                        width={150}
+                      />
+                    </div>
+                    <span>{selectedEquipment.nama_alat}</span>
+                  </div>
+                ) : (
+                  <span className="text-gray-400">
+                    Pilih alat dari daftar...
+                  </span>
+                );
+              })()}
+              <ChevronDown
+                className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {/* Dropdown Options Menu */}
+            {isDropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setIsDropdownOpen(false)}
+                />
+
+                <div className="absolute left-0 right-0 mt-2 bg-white border border-[#eef2f6] rounded-[20px] shadow-xl z-20 max-h-[250px] overflow-y-auto p-2 space-y-1">
+                  {equipments.length === 0 ? (
+                    <div className="px-4 py-3 text-xs text-gray-400 text-center font-medium">
+                      Belum ada alat olahraga.
+                    </div>
+                  ) : (
+                    equipments.map((eq) => (
+                      <button
+                        key={eq.id}
+                        type="button"
+                        onClick={() => {
+                          setAlatId(eq.id.toString());
+                          setIsDropdownOpen(false);
+                          if (error) setError("");
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-[12px] text-[14px] font-medium text-left transition-all ${
+                          Number(alatId) === eq.id
+                            ? "bg-[#dbf5ef] text-[#0d9488]"
+                            : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        <div className="w-8 h-8 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-white">
+                          <Image
+                            src={eq.foto_path}
+                            alt={eq.nama_alat}
+                            className="w-full h-full object-cover"
+                            width={200}
+                            height={200}
+                          />
+                        </div>
+                        <span>{eq.nama_alat}</span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </>
+            )}
           </div>
           {equipments.length === 0 && (
             <p className="text-xs text-orange-600 font-semibold mt-2 ml-1">
