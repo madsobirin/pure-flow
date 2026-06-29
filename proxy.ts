@@ -80,7 +80,8 @@ export default async function proxy(request: NextRequest) {
     pathname.startsWith("/api/auth/login") ||
     pathname.startsWith("/api/auth/register") ||
     pathname.startsWith("/api/auth/logout") ||
-    pathname.startsWith("/api/auth/google");
+    pathname.startsWith("/api/auth/google") ||
+    pathname.startsWith("/animation/");
 
   const token = request.cookies.get("auth_token")?.value;
   const secret = process.env.JWT_SECRET || "";
@@ -132,6 +133,6 @@ export default async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|lottie)$).*)",
   ],
 };

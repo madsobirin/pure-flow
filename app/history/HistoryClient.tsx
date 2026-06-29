@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
@@ -61,12 +60,16 @@ export default function HistoryClient() {
 
   // Navigate to previous month
   const prevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1),
+    );
   };
 
   // Navigate to next month
   const nextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1),
+    );
   };
 
   // Generate calendar grid cells
@@ -108,8 +111,12 @@ export default function HistoryClient() {
   }
 
   // Split cells into rows of 7
-  const calendarRows: { date: number | null; hasDot?: boolean; isActive?: boolean }[][] = [];
-  let currentRow: typeof calendarRows[number] = [];
+  const calendarRows: {
+    date: number | null;
+    hasDot?: boolean;
+    isActive?: boolean;
+  }[][] = [];
+  let currentRow: (typeof calendarRows)[number] = [];
 
   cells.forEach((cell, index) => {
     currentRow.push(cell);
@@ -139,10 +146,11 @@ export default function HistoryClient() {
   }).format(currentMonth);
 
   // Format selected day display
-  const selectedDateHeader = new Intl.DateTimeFormat("id-ID", {
-    day: "numeric",
-    month: "short",
-  }).format(selectedDate) + " Workouts";
+  const selectedDateHeader =
+    new Intl.DateTimeFormat("id-ID", {
+      day: "numeric",
+      month: "short",
+    }).format(selectedDate) + " Workouts";
 
   const handleSelectDay = (day: number) => {
     setSelectedDate(new Date(year, month, day));
@@ -224,7 +232,7 @@ export default function HistoryClient() {
                   <div />
                 )}
               </div>
-            ))
+            )),
           )}
 
           {/* Ellipsis Row to match aesthetic */}
@@ -270,7 +278,10 @@ export default function HistoryClient() {
               <div className="w-[72px] h-[72px] rounded-[16px] overflow-hidden shrink-0 bg-gray-50 border border-gray-100 flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={log.alat?.foto_path || "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=200&h=200&fit=crop"}
+                  src={
+                    log.alat?.foto_path ||
+                    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=200&h=200&fit=crop"
+                  }
                   alt={log.alat?.nama_alat || "Alat"}
                   className="w-full h-full object-cover"
                 />

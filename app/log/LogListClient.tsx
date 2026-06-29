@@ -36,6 +36,11 @@ export default function LogListClient({
 }: LogListClientProps) {
   const [logs, setLogs] = useState<LogType[]>(initialLogs);
   const [loading, setLoading] = useState(initialLogs.length === 0);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredLogs = logs.filter((log) =>
+    log.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   useEffect(() => {
     if (initialLogs.length === 0) {
@@ -97,6 +102,8 @@ export default function LogListClient({
         <input
           type="search"
           placeholder="Cari latihan..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="
           h-12
           w-full
@@ -140,8 +147,17 @@ export default function LogListClient({
               Silakan catat latihan harian Anda.
             </p>
           </div>
+        ) : filteredLogs.length === 0 ? (
+          <div className="text-center py-12 bg-field-bg rounded-3xl border border-dashed border-gray-200">
+            <p className="text-sm text-gray-500 font-semibold mb-1">
+              Latihan tidak ditemukan
+            </p>
+            <p className="text-xs text-gray-400">
+              Coba kata kunci pencarian yang lain.
+            </p>
+          </div>
         ) : (
-          logs.map((log) => (
+          filteredLogs.map((log) => (
             <Link
               href={`/log/${log.id}`}
               key={log.id}
