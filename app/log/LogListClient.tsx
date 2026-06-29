@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Plus, CheckCircle2 } from "lucide-react";
 import { formatLocalDate, formatLocalTime } from "@/lib/date";
+import { FiSearch } from "react-icons/fi";
 
 // 1. Tipe data hasil format untuk State UI
 interface LogType {
@@ -77,6 +78,7 @@ export default function LogListClient({
         <h1 className="text-2xl font-extrabold text-[#1a2332]">
           Daftar Latihan
         </h1>
+
         <Link
           href="/log/add"
           className="flex items-center gap-1.5 text-brand-teal font-bold bg-brand-teal-light px-3 py-1.5 rounded-full hover:bg-[#c9f2eb] transition-colors"
@@ -86,6 +88,34 @@ export default function LogListClient({
         </Link>
       </div>
 
+      <div className="relative mb-6">
+        <FiSearch
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          size={18}
+        />
+
+        <input
+          type="search"
+          placeholder="Cari latihan..."
+          className="
+          h-12
+          w-full
+          rounded-full
+          border border-slate-200
+          bg-white
+          pl-11
+          pr-4
+          text-sm
+          shadow-sm
+          transition
+          placeholder:text-slate-400
+          focus:border-[#0B7A75]
+          focus:ring-2
+          focus:ring-[#0B7A75]/20
+          focus:outline-none
+        "
+        />
+      </div>
       <div className="space-y-4">
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
