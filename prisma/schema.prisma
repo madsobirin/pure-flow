@@ -48,6 +48,7 @@ model LogLatihan {
   alat_id          Int
   jumlah_set       Int
   jumlah_repetisi  Int
+  berat_alat       Float?
   catatan_latihan  String?
   tanggal_latihan  DateTime @default(now())
   created_at       DateTime @default(now())

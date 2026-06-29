@@ -18,6 +18,7 @@ interface LogClientType {
   id: number;
   jumlah_set: number;
   jumlah_repetisi: number;
+  berat_alat: number | null;
   catatan_latihan: string | null;
   tanggal_latihan: string;
   formattedDate: string;
@@ -105,24 +106,34 @@ export default function LogDetailClient({ log }: LogDetailClientProps) {
           </div>
         )}
 
-        {/* Set & Reps Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-[#ccfbf1]/40 border border-[#e2fbf6] rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-            <span className="text-[11px] font-extrabold text-[#0f766e] uppercase tracking-widest mb-1">
+        {/* Set, Reps & Berat Stats */}
+        <div className={`grid ${log.berat_alat !== null && log.berat_alat !== undefined ? "grid-cols-3" : "grid-cols-2"} gap-3 mb-6`}>
+          <div className="bg-[#ccfbf1]/40 border border-[#e2fbf6] rounded-2xl p-3 flex flex-col items-center justify-center text-center">
+            <span className="text-[10px] font-extrabold text-[#0f766e] uppercase tracking-widest mb-1">
               Jumlah Set
             </span>
-            <span className="text-3xl font-extrabold text-gray-900">
+            <span className="text-2xl font-extrabold text-gray-900">
               {log.jumlah_set}
             </span>
           </div>
-          <div className="bg-[#e0e7ff]/40 border border-[#e2e8fe] rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-            <span className="text-[11px] font-extrabold text-[#4f46e5] uppercase tracking-widest mb-1">
+          <div className="bg-[#e0e7ff]/40 border border-[#e2e8fe] rounded-2xl p-3 flex flex-col items-center justify-center text-center">
+            <span className="text-[10px] font-extrabold text-[#4f46e5] uppercase tracking-widest mb-1">
               Repetisi
             </span>
-            <span className="text-3xl font-extrabold text-gray-900">
+            <span className="text-2xl font-extrabold text-gray-900">
               {log.jumlah_repetisi}
             </span>
           </div>
+          {log.berat_alat !== null && log.berat_alat !== undefined && (
+            <div className="bg-[#fef3c7]/50 border border-[#fde68a] rounded-2xl p-3 flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] font-extrabold text-[#b45309] uppercase tracking-widest mb-1">
+                Berat Alat
+              </span>
+              <span className="text-2xl font-extrabold text-gray-900">
+                {log.berat_alat} <span className="text-xs font-semibold text-gray-500">kg</span>
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Date and Time Details */}

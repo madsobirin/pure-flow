@@ -51,6 +51,7 @@ export default async function LogListPage() {
       name: log.alat?.nama_alat || "Alat Terhapus",
       sets: log.jumlah_set,
       reps: log.jumlah_repetisi,
+      berat_alat: log.berat_alat,
       date: formatLocalDate(log.tanggal_latihan),
       time: formatLocalTime(log.tanggal_latihan),
     };

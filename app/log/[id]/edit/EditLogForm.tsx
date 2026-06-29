@@ -17,6 +17,7 @@ interface LogEditType {
   alat_id: number;
   jumlah_set: number;
   jumlah_repetisi: number;
+  berat_alat: number | null;
   catatan_latihan: string | null;
   tanggal_latihan: string;
 }
@@ -43,6 +44,9 @@ export default function EditLogForm({ log, equipments }: EditLogFormProps) {
   const [alatId, setAlatId] = useState(log.alat_id);
   const [jumlahSet, setJumlahSet] = useState(log.jumlah_set);
   const [jumlahRepetisi, setJumlahRepetisi] = useState(log.jumlah_repetisi);
+  const [beratAlat, setBeratAlat] = useState(
+    log.berat_alat !== null && log.berat_alat !== undefined ? log.berat_alat.toString() : "",
+  );
   const [catatanLatihan, setCatatanLatihan] = useState(
     log.catatan_latihan || "",
   );
@@ -82,6 +86,7 @@ export default function EditLogForm({ log, equipments }: EditLogFormProps) {
           alat_id: alatId,
           jumlah_set: jumlahSet,
           jumlah_repetisi: jumlahRepetisi,
+          berat_alat: beratAlat ? parseFloat(beratAlat) : null,
           catatan_latihan: catatanLatihan.trim() || null,
           tanggal_latihan: new Date(tanggalLatihan).toISOString(),
         }),
@@ -202,6 +207,23 @@ export default function EditLogForm({ log, equipments }: EditLogFormProps) {
               value={tanggalLatihan}
               onChange={(e) => setTanggalLatihan(e.target.value)}
               className="w-full bg-field-bg border-none rounded-2xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all cursor-pointer"
+              disabled={isLoading}
+            />
+          </div>
+
+          {/* Berat Alat */}
+          <div className="mb-6">
+            <label className="block text-[13px] font-semibold text-gray-700 mb-2">
+              Berat Alat (kg, Opsional)
+            </label>
+            <input
+              type="number"
+              step="0.1"
+              min="0"
+              placeholder="Berat (kg)"
+              value={beratAlat}
+              onChange={(e) => setBeratAlat(e.target.value)}
+              className="w-full bg-field-bg border-none rounded-2xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all"
               disabled={isLoading}
             />
           </div>

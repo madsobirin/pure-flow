@@ -12,6 +12,7 @@ interface LogType {
   name: string;
   sets: number;
   reps: number;
+  berat_alat: number | null;
   date: string;
   time: string;
 }
@@ -22,6 +23,7 @@ interface RawLogType {
   tanggal_latihan: string; // atau Date jika berupa ISO string
   jumlah_set: number;
   jumlah_repetisi: number;
+  berat_alat: number | null;
   alat?: {
     nama_alat: string;
   } | null;
@@ -59,6 +61,7 @@ export default function LogListClient({
                   name: log.alat?.nama_alat || "Alat Terhapus",
                   sets: log.jumlah_set,
                   reps: log.jumlah_repetisi,
+                  berat_alat: log.berat_alat,
                   date: formatLocalDate(log.tanggal_latihan),
                   time: formatLocalTime(log.tanggal_latihan),
                 };
@@ -169,6 +172,7 @@ export default function LogListClient({
                 </h3>
                 <p className="text-gray-500 text-[13px] mb-2">
                   {log.sets} Sets • {log.reps} Reps
+                  {log.berat_alat !== null && log.berat_alat !== undefined && ` • ${log.berat_alat} kg`}
                 </p>
                 <p className="text-[11px] font-semibold text-brand-teal">
                   {log.date} - {log.time}

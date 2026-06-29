@@ -6,6 +6,7 @@ interface UpdateLogBody {
   alat_id?: number;
   jumlah_set?: number;
   jumlah_repetisi?: number;
+  berat_alat?: number | null;
   catatan_latihan?: string | null;
   tanggal_latihan?: string;
 }
@@ -44,7 +45,7 @@ export async function PUT(
     }
 
     const body: UpdateLogBody = await request.json();
-    const { alat_id, jumlah_set, jumlah_repetisi, catatan_latihan, tanggal_latihan } = body;
+    const { alat_id, jumlah_set, jumlah_repetisi, berat_alat, catatan_latihan, tanggal_latihan } = body;
 
     // Validasi input minimal
     if (alat_id !== undefined) {
@@ -65,6 +66,7 @@ export async function PUT(
         alat_id: alat_id !== undefined ? alat_id : existingLog.alat_id,
         jumlah_set: jumlah_set !== undefined ? jumlah_set : existingLog.jumlah_set,
         jumlah_repetisi: jumlah_repetisi !== undefined ? jumlah_repetisi : existingLog.jumlah_repetisi,
+        berat_alat: berat_alat !== undefined ? berat_alat : existingLog.berat_alat,
         catatan_latihan: catatan_latihan !== undefined ? catatan_latihan : existingLog.catatan_latihan,
         tanggal_latihan: tanggal_latihan !== undefined ? new Date(tanggal_latihan) : existingLog.tanggal_latihan,
       },

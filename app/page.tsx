@@ -96,7 +96,8 @@ async function DashboardContent({ userId }: { userId: number }) {
     return {
       id: log.id,
       title: log.alat?.nama_alat || "Alat Terhapus",
-      subtitle: `${log.jumlah_set} Sets • ${log.jumlah_repetisi} Reps`,
+      subtitle: `${log.jumlah_set} Sets • ${log.jumlah_repetisi} Reps` +
+        (log.berat_alat !== null && log.berat_alat !== undefined ? ` • ${log.berat_alat} kg` : ""),
       category: isCardio ? "CARDIO" : "STRENGTH",
       categoryColor: isCardio ? "text-[#628fdb]" : "text-[#d9657b]",
       categoryBg: isCardio ? "bg-[#eef4ff]" : "bg-[#fcebef]",

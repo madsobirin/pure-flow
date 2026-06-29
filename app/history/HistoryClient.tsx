@@ -19,6 +19,7 @@ interface LogLatihan {
   id: number;
   jumlah_set: number;
   jumlah_repetisi: number;
+  berat_alat: number | null;
   catatan_latihan: string | null;
   tanggal_latihan: string;
   alat?: Alat;
@@ -297,6 +298,11 @@ export default function HistoryClient() {
                   <span className="bg-[#e0e7ff] text-[#4f46e5] px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wide">
                     {log.jumlah_repetisi} Reps
                   </span>
+                  {log.berat_alat !== null && log.berat_alat !== undefined && (
+                    <span className="bg-[#fef3c7] text-[#b45309] px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wide">
+                      {log.berat_alat} kg
+                    </span>
+                  )}
                 </div>
                 {log.catatan_latihan && (
                   <p className="text-[12px] text-gray-500 leading-[1.4] font-medium">

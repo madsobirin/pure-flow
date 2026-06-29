@@ -11,6 +11,7 @@ interface LogLatihanBody {
   jumlah_set?: number;
   jumlah_repetisi?: number;
   catatan_latihan?: string;
+  berat_alat?: number;
 }
 
 // ============================================================
@@ -25,16 +26,23 @@ export async function POST(request: NextRequest) {
     const userId = parseInt(userIdStr, 10);
 
     const body: LogLatihanBody = await request.json();
-    const { alat_id, jumlah_set, jumlah_repetisi, catatan_latihan } = body;
+    const {
+      alat_id,
+      jumlah_set,
+      jumlah_repetisi,
+      berat_alat,
+      catatan_latihan,
+    } = body;
 
     // --- Validasi input ---
-    if (!alat_id || !jumlah_set || !jumlah_repetisi) {
+    if (!alat_id || !jumlah_set || !jumlah_repetisi || !berat_alat) {
       return Response.json(
         {
           success: false,
-          message: "Field alat_id, jumlah_set, dan jumlah_repetisi wajib diisi.",
+          message:
+            "Field alat_id, jumlah_set, jumlah_repetisi, dan berat_alat wajib diisi.",
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
@@ -52,7 +60,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Alat tidak ditemukan atau bukan milik Anda.",
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -63,6 +71,7 @@ export async function POST(request: NextRequest) {
         alat_id,
         jumlah_set,
         jumlah_repetisi,
+        berat_alat,
         catatan_latihan: catatan_latihan || null,
         tanggal_latihan: new Date(), // Timestamp otomatis saat ini
       },
@@ -82,7 +91,7 @@ export async function POST(request: NextRequest) {
         message: "Log latihan berhasil disimpan.",
         data: logLatihan,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("[POST /api/log-latihan]", error);
@@ -91,7 +100,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "Internal server error.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -116,9 +125,10 @@ export async function GET(request: NextRequest) {
       return Response.json(
         {
           success: false,
-          message: "Query parameter 'tanggal' (format: YYYY-MM-DD) atau 'bulan' (format: YYYY-MM) wajib diisi.",
+          message:
+            "Query parameter 'tanggal' (format: YYYY-MM-DD) atau 'bulan' (format: YYYY-MM) wajib diisi.",
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
@@ -133,7 +143,7 @@ export async function GET(request: NextRequest) {
             success: false,
             message: "Format bulan tidak valid. Gunakan format YYYY-MM.",
           },
-          { status: 422 }
+          { status: 422 },
         );
       }
 
@@ -168,7 +178,7 @@ export async function GET(request: NextRequest) {
           bulan,
           data: logs,
         },
-        { status: 200 }
+        { status: 200 },
       );
     } else if (tanggal) {
       // --- Validasi format tanggal ---
@@ -179,7 +189,7 @@ export async function GET(request: NextRequest) {
             success: false,
             message: "Format tanggal tidak valid. Gunakan format YYYY-MM-DD.",
           },
-          { status: 422 }
+          { status: 422 },
         );
       }
 
@@ -214,7 +224,7 @@ export async function GET(request: NextRequest) {
           tanggal,
           data: logs,
         },
-        { status: 200 }
+        { status: 200 },
       );
     }
   } catch (error) {
@@ -224,7 +234,7 @@ export async function GET(request: NextRequest) {
         success: false,
         message: "Internal server error.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

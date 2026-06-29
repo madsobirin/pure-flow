@@ -90,6 +90,7 @@ export default async function LogDetailPage({
     id: log.id,
     jumlah_set: log.jumlah_set,
     jumlah_repetisi: log.jumlah_repetisi,
+    berat_alat: log.berat_alat,
     catatan_latihan: log.catatan_latihan,
     tanggal_latihan: log.tanggal_latihan.toISOString(),
     formattedDate: formatLocalDate(log.tanggal_latihan, longDateOptions),

@@ -33,6 +33,7 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
   const [alatId, setAlatId] = useState("");
   const [sets, setSets] = useState(1);
   const [reps, setReps] = useState(1);
+  const [beratAlat, setBeratAlat] = useState("");
   const [catatanLatihan, setCatatanLatihan] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -54,8 +55,14 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
       };
 
       try {
-        setCurrentDateStr(new Intl.DateTimeFormat("id-ID", dateOptions).format(now));
-        setCurrentTimeStr(new Intl.DateTimeFormat("id-ID", timeOptions).format(now).replace(":", "."));
+        setCurrentDateStr(
+          new Intl.DateTimeFormat("id-ID", dateOptions).format(now),
+        );
+        setCurrentTimeStr(
+          new Intl.DateTimeFormat("id-ID", timeOptions)
+            .format(now)
+            .replace(":", "."),
+        );
       } catch {
         // Fallback
         setCurrentDateStr(now.toLocaleDateString("id-ID"));
@@ -96,6 +103,7 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
           alat_id: Number(alatId),
           jumlah_set: sets,
           jumlah_repetisi: reps,
+          berat_alat: beratAlat ? parseFloat(beratAlat) : undefined,
           catatan_latihan: catatanLatihan.trim() || undefined,
         }),
       });
@@ -182,15 +190,18 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
           </div>
           {equipments.length === 0 && (
             <p className="text-xs text-orange-600 font-semibold mt-2 ml-1">
-              Anda belum menambahkan alat. Silakan tambah alat terlebih dahulu di menu{" "}
-              <Link href="/equipment/add" className="underline hover:text-brand-teal">
+              Anda belum menambahkan alat. Silakan tambah alat terlebih dahulu
+              di menu{" "}
+              <Link
+                href="/equipment/add"
+                className="underline hover:text-brand-teal"
+              >
                 Equipment
               </Link>
               .
             </p>
           )}
         </div>
-
         {/* Set & Reps counters */}
         <div className="flex gap-4 mb-6">
           {/* Sets */}
@@ -211,7 +222,10 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
                   className="flex-1 flex items-center justify-center border-b border-[#e8eaec] bg-field-bg hover:bg-white transition-colors cursor-pointer"
                   disabled={isLoading}
                 >
-                  <Plus className="w-3.5 h-3.5 text-brand-teal" strokeWidth={2.5} />
+                  <Plus
+                    className="w-3.5 h-3.5 text-brand-teal"
+                    strokeWidth={2.5}
+                  />
                 </button>
                 <button
                   type="button"
@@ -219,7 +233,10 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
                   className="flex-1 flex items-center justify-center bg-field-bg hover:bg-white transition-colors cursor-pointer"
                   disabled={isLoading}
                 >
-                  <Minus className="w-3.5 h-3.5 text-brand-teal" strokeWidth={2.5} />
+                  <Minus
+                    className="w-3.5 h-3.5 text-brand-teal"
+                    strokeWidth={2.5}
+                  />
                 </button>
               </div>
             </div>
@@ -243,7 +260,10 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
                   className="flex-1 flex items-center justify-center border-b border-[#e8eaec] bg-field-bg hover:bg-white transition-colors cursor-pointer"
                   disabled={isLoading}
                 >
-                  <Plus className="w-3.5 h-3.5 text-brand-teal" strokeWidth={2.5} />
+                  <Plus
+                    className="w-3.5 h-3.5 text-brand-teal"
+                    strokeWidth={2.5}
+                  />
                 </button>
                 <button
                   type="button"
@@ -251,11 +271,32 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
                   className="flex-1 flex items-center justify-center bg-field-bg hover:bg-white transition-colors cursor-pointer"
                   disabled={isLoading}
                 >
-                  <Minus className="w-3.5 h-3.5 text-brand-teal" strokeWidth={2.5} />
+                  <Minus
+                    className="w-3.5 h-3.5 text-brand-teal"
+                    strokeWidth={2.5}
+                  />
                 </button>
               </div>
             </div>
           </div>
+        </div>
+        <div className="mb-8">
+          <label className="block text-[10px] font-extrabold text-[#1a2332] tracking-widest uppercase mb-2">
+            BERAT ALAT{" "}
+            <span className="text-[#a8b0ba] font-medium lowercase tracking-normal">
+              (opsional)
+            </span>
+          </label>
+          <input
+            type="number"
+            step="0.1"
+            min="0"
+            placeholder="Berat (kg)"
+            value={beratAlat}
+            onChange={(e) => setBeratAlat(e.target.value)}
+            className="w-full bg-field-bg border-none rounded-[16px] px-5 py-4 text-[14px] text-gray-600 appearance-none focus:outline-none focus:ring-2 focus:ring-brand-teal/20 transition-all font-medium pr-10 cursor-pointer"
+            disabled={isLoading}
+          />
         </div>
 
         {/* Catatan Latihan */}
@@ -275,7 +316,6 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
             disabled={isLoading}
           />
         </div>
-
         {/* Save Button */}
         <button
           type="submit"
@@ -287,13 +327,15 @@ export default function AddLogForm({ equipments }: AddLogFormProps) {
           ) : (
             <>
               <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
-                <Check className="w-3.5 h-3.5 text-brand-teal" strokeWidth={4} />
+                <Check
+                  className="w-3.5 h-3.5 text-brand-teal"
+                  strokeWidth={4}
+                />
               </div>
               <span>Simpan Latihan</span>
             </>
           )}
         </button>
-
         <p className="text-center text-[11px] text-[#ccd2d8] font-medium mt-4">
           Log ini akan disimpan dengan timestamp saat ini.
         </p>
